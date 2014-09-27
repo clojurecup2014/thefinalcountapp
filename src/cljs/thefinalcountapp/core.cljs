@@ -22,7 +22,6 @@
 ;     [:g {:transform "scale(1.0, 1.0)"} [counter]]]]])
 
 (defn counter-list []
-  (.log js/console (count (:counters @state)))
   (if (>= (count (:counters @state)) 3)
     (let [idx (:displaying @state)
           center-counter (nth (:counters @state) idx)
@@ -30,7 +29,7 @@
           left-counter (nth (:counters @state) left-idx)
           right-idx (if (> (inc idx) (dec (count (:counters @state)))) 0 (inc idx))
           right-counter (nth (:counters @state) right-idx)]
-      [:g
+      [:g {:transform "translate(-350, -100) scale(1.4, 1.4)"}
        [:g {:transform "translate(350, 120) scale(0.8, 0.8)" :style #js {"opacity" "0.4"}}
         [counter left-counter]]
        [:g {:transform "translate(1080, 120) scale(0.8, 0.8)" :style #js {"opacity" "0.4"}}

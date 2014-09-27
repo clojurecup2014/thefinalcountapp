@@ -1,0 +1,124 @@
+body {
+    background-color: #18b3c2;
+}
+
+.head {
+    text-align: center;
+    border-radius: 10px;
+    height: 150px;
+    background-image: url("/images/logo-white-background.png");
+    background-repeat: no-repeat;
+    background-position-x: 50%;
+    padding-top: 76px;
+    font-size: 45px;
+    color: white;
+}
+
+.head img {
+    margin: 0px auto;
+}
+
+.wrapper {
+    border: 3px solid white;
+    border-radius: 10px;
+    height: 72px;
+    z-index: -1000;
+    position: absolute;
+    width: 95%;
+    margin-left: 2%;
+}
+
+.create-title {
+    float: left;
+    padding-top: 9px;
+    width: 45%;
+}
+
+.preview-title {
+    float: right;
+    padding-top: 9px;
+    width: 45%;
+}
+
+.color-picker {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    border: 4px solid transparent;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.color-picker:hover, .color-picker.selected {
+    border: 4px solid #ae2319;
+}
+
+form {
+    position: absolute;
+    padding: 30px;
+    width: 540px;
+    height: 536px;
+    background-color: white;
+    border-radius: 10px;
+    left: 150px;
+    margin-top: 36px;
+    color: #989898;
+}
+
+input, select {
+    display: block;
+    border: 1px solid #d7d7d7;
+    padding: 20px 20px;
+    background-color: white;
+    width: 540px;
+    border-radius: 10px;
+    font-size: 20px;
+    margin-bottom: 40px;
+    color: #989898;
+}
+
+.reset-enabled span {
+    float: left;
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.reset-enabled input {
+    float: left;
+    width: auto;
+    border: 1px solid black;
+    background-color: white;
+}
+
+input {
+    width: 498px;
+}
+
+.color-picker-panel {
+    clear: both;
+    font-size: 20px;
+}
+.color-picker-panel span {
+    margin-right: 10px;
+}
+
+.colors-panel {
+    display: inline-block;
+    position: relative;
+    top: 10px;
+    margin-left: 12px;
+}
+
+button {
+    display: block;
+    margin: auto;
+    margin-top: 98px;
+    padding: 15px 30px;
+    color: white;
+    background-color: #18b3c2;
+    font-size: 28px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+}
