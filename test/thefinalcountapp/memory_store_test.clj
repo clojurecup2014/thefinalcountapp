@@ -8,7 +8,7 @@
   (memstore/->InMemoryDatabase (atom {})))
 
 
-(deftest create-group
+(deftest groups
   (testing "A group can be created and retrieved"
     (let [store (make-store)
           name "Kaleidos Team"
@@ -18,8 +18,8 @@
        (is (= group (store/get-group store name)))
        (is (store/group-exists? store name)))))
 
-(deftest create-counter
-  (testing "A counter can be added to a group, retrieved and updated")
+(deftest counters
+  (testing "A counter can be added to a group, retrieved, updated and deleted")
     (let [store (make-store)
           gr "Kaleidos Team"
           _ (store/create-group store name)
@@ -31,4 +31,6 @@
        (is (store/counter-exists? store gr cid))
        (is (= c (store/get-counter store gr cid)))
        (store/update-counter store gr cid {:value 0})
-       (is (zero? (:value (store/get-counter store gr cid))))))
+       (is (zero? (:value (store/get-counter store gr cid))))
+       (store/delete-counter store gr cid)
+       (is (not (store/counter-exists? store gr cid)))))

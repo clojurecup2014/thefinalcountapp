@@ -60,3 +60,7 @@
 
 (defn put [url data]
   (send {:method :put, :url url, :data data}))
+
+
+(defn delete [url]
+  (send {:method :delete, :url url}))

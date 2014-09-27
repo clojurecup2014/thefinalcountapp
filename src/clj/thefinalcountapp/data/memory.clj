@@ -50,4 +50,8 @@
           updated-counter (merge old-counter new-counter)
           new-counters (conj counters updated-counter)]
      (swap! store #(assoc-in % [group :counters] new-counters))
-     updated-counter)))
+     updated-counter))
+
+  (delete-counter [_ group counter-id]
+    (let [new-counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))]
+      (swap! store #(assoc-in % [group :counters] new-counters)))))

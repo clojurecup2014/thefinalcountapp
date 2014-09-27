@@ -7,14 +7,14 @@
             [thefinalcountapp.data.memory :as memstore]
             [com.stuartsierra.component :as component]))
 
-(def initial-data {"kaleidos-team" {:counters [{:id 1 :type :count-up :value 321 :text "somebody messing up with the git repo" :last-updated (Date.) :public-reset true}
+(defonce initial-data (atom {"kaleidos-team" {:counters [{:id 1 :type :count-up :value 321 :text "somebody messing up with the git repo" :last-updated (Date.) :public-reset true}
                                                {:id 2 :type :streak   :value 350 :text "daily Github commit" :last-updated (Date.) :public-reset true}
                                                {:id 3 :type :counter  :value 123 :text "we've broken the GIT repo' " :last-updated (Date.) :public-reset false :public-plus true}]
-                                     :name "Kaleidos Team"}})
+                                     :name "Kaleidos Team"}}))
 
 (defn make-system []
   (component/system-map
-    :db (memstore/->InMemoryDatabase (atom initial-data))
+    :db (memstore/->InMemoryDatabase initial-data)
     :api (component/using
           (api/map->API {})
           [:db])

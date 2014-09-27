@@ -16,4 +16,6 @@
 
   (get-counter [_ group id])
 
-  (update-counter [_ group counter-id new-counter]))
+  (update-counter [_ group counter-id new-counter])
+
+  (delete-counter [_ group counter-id]))

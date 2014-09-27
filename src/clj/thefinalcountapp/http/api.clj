@@ -1,5 +1,5 @@
 (ns thefinalcountapp.http.api
-  (:require [compojure.core :refer [defroutes GET POST PUT ANY]]
+  (:require [compojure.core :refer [defroutes GET POST PUT ANY DELETE]]
             [com.stuartsierra.component :as component]
             [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
@@ -104,13 +104,27 @@
   :handle-ok ::entity)
 
 
+(defresource counter-delete [group counter-id]
+  resource-defaults
+  :allowed-methods [:delete]
+  :exists? (fn [ctx]
+             (let [req (:request ctx)
+                   db (::db req)]
+                 (store/counter-exists? db group counter-id)))
+  :delete! (fn [ctx]
+             (let [req (:request ctx)
+                   db (::db req)]
+              (store/delete-counter db group counter-id))))
+
+
 ;; Routes
 (defroutes api-routes
   (POST "/api/counters" [] (group-creation))
   (GET "/api/counters/:group" [group] (group-detail group))
   (POST "/api/counters/:group" [group] (counter-create group))
   (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group (Integer/parseInt id)))
-  (PUT ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-update group (Integer/parseInt id))))
+  (PUT ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-update group (Integer/parseInt id)))
+  (DELETE ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-delete group (Integer/parseInt id))))
 
 
 ;; Component
