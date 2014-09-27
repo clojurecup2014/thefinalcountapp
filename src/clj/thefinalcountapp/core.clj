@@ -2,13 +2,13 @@
   (:require [thefinalcountapp.http.server :as server]
             [thefinalcountapp.http.api :as api]
             [thefinalcountapp.http.routes :as routes]
-            [thefinalcountapp.data :as data]
+            [thefinalcountapp.data.store :as store]
             [com.stuartsierra.component :as component]))
 
 
 (defn make-system []
   (component/system-map
-    :db (data/map->Database {:dbspec {}})
+    :db (store/map->Database {:dbspec {}})
     :api (component/using
           (api/map->API {})
           [:db])

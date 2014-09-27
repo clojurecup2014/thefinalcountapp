@@ -3,7 +3,7 @@
             [com.stuartsierra.component :as component]
             [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
-            [thefinalcountapp.data :as data]
+            [thefinalcountapp.data.query :as query]
             [liberator.core :refer [defresource]]
             [io.clojure.liberator-transit]))
 
@@ -19,12 +19,12 @@
                  (let [body (get-in ctx [:request :body])
                        group (:group body)
                        db (::db ctx)]
-                   (not (data/group-exists? db group))))
+                   (not (query/group-exists? db group))))
   :post! (fn [ctx]
            (let [body (get-in ctx [:request :body])
                  group (:group body)
                  db (::db ctx)]
-             {::entity (data/create-group db group)}))
+             {::entity (query/create-group db group)}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
@@ -38,7 +38,7 @@
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (data/get-group db group))))
+                 (query/get-group db group))))
 
 
 (defresource counter-detail [group counter-id]
@@ -47,11 +47,11 @@
   :exists? (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-                 (data/counter-exists? db group  (Integer/parseInt counter-id))))
+                 (query/counter-exists? db group  (Integer/parseInt counter-id))))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (data/get-counter db group (Integer/parseInt counter-id)))))
+                 (query/get-counter db group (Integer/parseInt counter-id)))))
 
 
 (defresource counter-create [group]
@@ -61,7 +61,7 @@
            (let [body (get-in ctx [:request :body])
                  counter (transit/read (transit/reader body :json))
                  db (::db ctx)]
-             {::entity (data/create-counter db group counter)}))
+             {::entity (query/create-counter db group counter)}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
