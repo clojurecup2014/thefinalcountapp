@@ -1,0 +1,19 @@
+* {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.content {
+    text-align: center;
+}
+
+.logo-title {
+    background-image: url('/images/logo.png');
+    height: 484px;
+    width: 578px;
+    display: block;
+    margin: 0px auto;
+    text-indent: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 150px;
+}

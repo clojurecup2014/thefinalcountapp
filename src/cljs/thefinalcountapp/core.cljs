@@ -5,7 +5,8 @@
             [cljs.core.async :refer [<!]]))
 
 (defn main-component []
-  [:h1 "The Final Count App (From CLJS)"])
+  [:div.content
+   [:h1.logo-title "The Final Count App (From CLJS)"]])
 
 
 (defn ^:export run []
