@@ -44,7 +44,7 @@
     [:img {:class "logo" :src "/images/logo.png" :alt "The Final Count App"}]
     [:div {:class "content-buttons"}
      [:a {:class "group" :href "#"} "Kaleidos Team"]
-     [:a {:class "add-btn" :href "#"} "+"]]]
+     [:a {:class "add-btn" :href "/create.html"} "+"]]]
    [:div#content
     [:svg {:width "100%" :height "100%"}
      [counter-list]

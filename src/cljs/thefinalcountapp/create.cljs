@@ -21,12 +21,12 @@
   [:div {:class "color-picker" :style #js {"background-color" color}}])
 
 (defn counter-form []
-  [:form
-   [:select {:name "type"}
+  [:form {:on-submit (fn [e] (go (<! (http/post "/api/counters/kaleidos-team" @current-counter)) (set! (.-location js/window) "/")) false)}
+   [:select {:name "type" :on-change #(swap! current-counter assoc :type (-> % .-target .-value keyword))}
     [:option {:value "count-up"} "DAYS WITHOUT"]
     [:option {:value "streak"} "DAYS DOING"]
     [:option {:value "counter"} "TIMES"]]
-   [:input {:type "text" :name "text" :placeholder "Introduce text"}]
+   [:input {:type "text" :name "text" :placeholder "Introduce text" :on-change #(swap! current-counter assoc :text (-> % .-target .-value))}]
    [:div {:class "reset-enabled"}
     [:span "Reset enabled"]
     [:input {:type "checkbox" :name "public-reset"}]]
