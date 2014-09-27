@@ -1,6 +1,7 @@
 (ns thefinalcountapp.http.api
-  (:require [compojure.core :refer [defroutes ANY]]
+  (:require [compojure.core :refer [defroutes GET POST PUT ANY]]
             [com.stuartsierra.component :as component]
+            [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
             [thefinalcountapp.data :as data]
             [liberator.core :refer [defresource]]
@@ -8,9 +9,9 @@
 
 ;; Resources
 (def resource-defaults
-  {:available-media-types ["application/transit+json" "application/json"]})
+  {:available-media-types ["application/transit+json"]})
 
-(defresource group-list []
+(defresource group-creation []
   resource-defaults
   :allowed-methods [:post]
   :authorized? (fn [ctx]
@@ -40,17 +41,33 @@
 
 (defresource counter-detail [group counter-id]
   resource-defaults
+  :allowed-methods [:get]
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
                  (data/get-counter db group counter-id))))
 
+(defresource counter-create [group]
+  resource-defaults
+  :allowed-methods [:post]
+  :post! (fn [ctx]
+           (let [body (get-in ctx [:request :body])
+                 counter (transit/read (transit/reader body :json))
+                 db (::db ctx)]
+             {::entity (data/create-counter db group counter)}))
+  :post-redirect? false
+  :new? false
+  :respond-with-entity? true
+  :multiple-representations? false
+  :handle-ok ::entity)
+
 
 ;; Routes
 (defroutes api-routes
-  (ANY "/api/counters" [] (group-list))
-  (ANY "/api/counters/:group" [group] (group-detail group))
-  (ANY "/api/counters/:group/:id" [group id] (counter-detail group id)))
+  (POST "/api/counters" [] (group-creation))
+  (GET "/api/counters/:group" [group] (group-detail group))
+  (POST "/api/counters/:group" [group] (counter-create group))
+  (GET "/api/counters/:group/:id" [group id] (counter-detail group id)))
 
 
 ;; Component
