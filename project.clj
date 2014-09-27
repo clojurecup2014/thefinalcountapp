@@ -3,4 +3,21 @@
   :url "http://thefinalcountapp.clojurecup.com"
   :license {:name "GNU Affero General Public License"
             :url "http://www.gnu.org/licenses/agpl-3.0.html"}
-  :dependencies [[org.clojure/clojure "1.7.0-alpha2"]])
+  :dependencies [[org.clojure/clojure "1.7.0-alpha2"]
+                 [org.clojure/clojurescript "0.0-2322"]
+
+                 [org.clojure/core.async "0.1.338.0-5c5012-alpha"]
+
+                 [http-kit "2.1.19"]
+                 [compojure "1.1.9"]
+                 [ring "1.3.1"]
+                 [hiccup "1.0.5"]
+                 [com.cognitect/transit-clj "0.8.247"]
+                 [com.cognitect/transit-cljs "0.8.188"]
+
+                 [com.stuartsierra/component "0.2.2"]
+
+                 [cats "0.2.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
+
+                 [reagent "0.4.2"]]
+  :plugins [[lein-cljsbuild "1.0.3"]])
