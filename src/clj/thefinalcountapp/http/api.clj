@@ -2,31 +2,50 @@
   (:require [compojure.core :refer [defroutes ANY]]
             [com.stuartsierra.component :as component]
             [ring.middleware.defaults :as ring-defaults]
-            [thefinalcountapp.db :as db]
+            [thefinalcountapp.data :as data]
             [liberator.core :refer [defresource]]
             [io.clojure.liberator-transit]))
 
 ;; Resources
-(defresource counters-resource [group]
-  :available-media-types ["application/transit+json" "application/json"]
+(def resource-defaults
+  {:available-media-types ["application/transit+json" "application/json"]})
+
+(defresource group-list []
+  resource-defaults
+  :allowed-methods [:post]
+  :post! (fn [ctx]
+           (let [body (get-in ctx [:request :body])
+                 group (:group body)
+                 db (::db ctx)]
+             {::entity (data/create-group db group)}))
+  :post-redirect? false
+  :new? false
+  :respond-with-entity? true
+  :multiple-representations? false
+  :handle-ok ::entity)
+
+(defresource group-detail [group]
+  resource-defaults
+  :allowed-methods [:get]
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (db/get-group db group))))
+                 (data/get-group db group))))
 
 
-(defresource counters-resource-detail [group counter-id]
-  :available-media-types ["application/transit+json" "application/json"]
+(defresource counter-detail [group counter-id]
+  resource-defaults
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (db/get-counter db group counter-id))))
+                 (data/get-counter db group counter-id))))
 
 
 ;; Routes
 (defroutes api-routes
-  (ANY "/api/counters/:group" [group] (counters-resource group))
-  (ANY "/api/counters/:group/:id" [group id] (counters-resource-detail group id)))
+  (ANY "/api/counters" [] (group-list))
+  (ANY "/api/counters/:group" [group] (group-detail group))
+  (ANY "/api/counters/:group/:id" [group id] (counter-detail group id)))
 
 
 ;; Component

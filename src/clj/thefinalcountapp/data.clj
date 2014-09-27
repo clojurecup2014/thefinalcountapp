@@ -1,4 +1,4 @@
-(ns thefinalcountapp.db
+(ns thefinalcountapp.data
   (:import  [java.util Date])
   (:require [compojure.core :refer [defroutes GET ANY]]
             [compojure.route :as route]
@@ -29,6 +29,10 @@
     (dissoc this :pool)))
 
 ; Public API
+(defn create-group [_ group-name]
+  (swap! db #(assoc % group-name []))
+  {:name group-name
+   :counters (@db group-name)})
 
 (defn get-group [_ group-name]
   (@db group-name))
