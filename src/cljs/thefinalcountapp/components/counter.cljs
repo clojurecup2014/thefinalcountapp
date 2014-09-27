@@ -18,8 +18,8 @@
    ])
 
 
-(defn counter []
-  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"}}
+(defn counter [title text counter-a counter-b counter-c reset-text opacity]
+  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline" "opacity" opacity}}
    [:rect {:width "482.69235" :height "487.99667" :rx "7.2934284" :ry "7.2934284" :x "415.93054" :y "323.10889" :style #js {"fill" "#989898" "fill-opacity" "1" "stroke" "none"}}]
    [:rect {:width "482.69235" :height "487.99667" :rx "7.2934284" :ry "7.2934284" :x "415.93054" :y "317.48282" :style #js {"fill" "#ffffff" "fill-opacity" "1" "stroke" "none"}}]
    [:rect {:width "425.00797" :height "220.79196" :rx "7.2934284" :ry "7.2934284" :x "444.97101" :y "492.94446" :style #js {"fill" "#d7d7d7" "fill-opacity" "1" "stroke" "none"}}]
@@ -34,7 +34,7 @@
     [:rect {:width "406" :height "73" :x "862.87341" :y "233.5" :style #js {"fill" "#e34a3f" "fill-opacity" "1" "stroke" "none"}}]
     [:text {:x "952.60876" :y "288.008" :style #js {"font-size" "40px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#000000" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
      [:tspan {:x "952.60876" :y "288.008" :style #js {"font-size" "48px" "font-style" "normal" "font-variant" "normal" "font-weight" "normal" "font-stretch" "normal" "fill" "#ffffff" "font-family" "Ubuntu"}}
-      "DÍAS SIN..."]
+      title]
      ]
     ]
 
@@ -43,20 +43,20 @@
    [:rect {:width "125.88039" :height "184.32481" :rx "7.0647144" :ry "7.0647144" :x "730.58063" :y "506.07193" :style #js {"fill" "#ffffff" "fill-opacity" "1" "stroke" "none"}}]
 
    [:text {:x "470.02893" :y "663.30927" :style #js {"font-size" "196.89212036px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#412f72" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
-    [:tspan {:x "470.02893" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} "3"]]
+    [:tspan {:x "470.02893" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} counter-a]]
 
    [:text {:x "603.26941" :y "663.30927" :style #js {"font-size" "196.89212036px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#412f72" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
-    [:tspan {:x "603.26941" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} "6"]]
+    [:tspan {:x "603.26941" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} counter-b]]
 
    [:text {:x "741.38593" :y "663.30927" :style #js {"font-size" "196.89212036px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#412f72" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
-    [:tspan {:x "741.38593" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} "5"]]
+    [:tspan {:x "741.38593" :y "663.30927" :style #js {"font-size" "187.53573608px" "fill" "#412f72" "fill-opacity" "1" "font-family" "ubuntu"}} counter-c]]
 
    [:rect {:width "416.38846" :height "3.6467142" :rx "3.3151948" :ry "1.8233571" :x "450.93835" :y "418.66232" :style #js {"fill" "#f5ebd4" "fill-opacity" "1" "stroke" "none"}}]
    [:text {:x "486.92908" :y "416.90073" :style #js {"font-size" "37.50714874px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#412f72" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
-    [:tspan {:x "486.92908" :y "416.90073" :style #js {"font-size" "33.75643158px" "font-style" "normal" "font-variant" "normal" "font-weight" "normal" "font-stretch" "normal" "fill" "#412f72" "fill-opacity" "1" "font-family" "Ubuntu"}} "Que nos pierda la boca"]]
+    [:tspan {:x "486.92908" :y "416.90073" :style #js {"font-size" "33.75643158px" "font-style" "normal" "font-variant" "normal" "font-weight" "normal" "font-stretch" "normal" "fill" "#412f72" "fill-opacity" "1" "font-family" "Ubuntu"}} text]]
    [:rect {:width "416.38846" :height "3.6467142" :rx "3.3151948" :ry "1.8233571" :x "450.93835" :y "465.54626" :style #js {"fill" "#f5ebd4" "fill-opacity" "1" "stroke" "none"}}]
    [:text {:x "515.60193" :y "742.90076" :style #js {"font-size" "37.50714874px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#18b3c2" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}>
-    [:tspan {:x "515.60193" :y "742.90076" :style #js {"font-size" "18px" "font-style" "italic" "font-variant" "normal" "font-weight" "300" "font-stretch" "normal" "text-align" "start" "line-height" "125%" "writing-mode" "lr-tb" "text-anchor" "start" "fill" "#18b3c2" "fill-opacity" "1" "font-family" "Ubuntu"}} "Último reset 18/09/2014 a las 9:00h"]]
+    [:tspan {:x "515.60193" :y "742.90076" :style #js {"font-size" "18px" "font-style" "italic" "font-variant" "normal" "font-weight" "300" "font-stretch" "normal" "text-align" "start" "line-height" "125%" "writing-mode" "lr-tb" "text-anchor" "start" "fill" "#18b3c2" "fill-opacity" "1" "font-family" "Ubuntu"}} reset-text]]
 
    [button-reset]
    ])

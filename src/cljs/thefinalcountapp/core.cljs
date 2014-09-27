@@ -21,9 +21,18 @@
 ;     [:g {:transform "scale(1.0, 1.0)"} [counter]]]]])
 
 (defn main-component []
-  [:div.content
-   [:svg {:width "100%" :height "100%"}
-    [counter]]])
+  [:div
+   [:div
+    [:img {:class "logo" :src "/images/logo.png" :alt "The Final Count App"}]
+    [:div {:class "content-buttons"}
+     [:a {:class "group" :href "#"} "Kaleidos Team"]
+     [:a {:class "add-btn" :href "#"} "+"]]]
+   [:div#content
+    [:svg {:width "100%" :height "100%"}
+     [:g {:transform "translate(350, 120) scale(0.8, 0.8)"} [counter "DÍAS SIN 1" "que nos pierda la boca" "0" "0" "1" "Último reset 18/09/2014 a las 9:00h" "0.4"]]
+     [:g {:transform "translate(1080, 120) scale(0.8, 0.8)"} [counter "DÍAS SIN 2" "que nos pierda la boca" "0" "0" "3" "Último reset 18/09/2014 a las 9:00h" "0.4"]]
+     [:g {:transform "translate(640, 80)"} [counter "DÍAS SIN 3" "que nos pierda la boca" "0" "0" "2" "Último reset 18/09/2014 a las 9:00h" "1.0"]]
+     ]]])
 
 
 (defn ^:export run []

@@ -5,11 +5,45 @@
 body {
     background-color: #f2f2f2;
 }
-.content {
+
+#content {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    margin-top: 150px;
+    margin-bottom: -150px;
+}
+
+.logo {
+    width: 150px;
+}
+.content-buttons {
+    float: right;
+    margin-top: 31px;
+    margin-right: 24px;
+}
+.group {
+    display: inline-block;
+    background-color: #e34a3f;
+    color: white;
+
+    border-radius: 10px;
+    padding: 10px 25px;
+    text-decoration: none;
+    font-size: 25px;
+
+    margin-right: 10px;
+}
+.add-btn {
+    display: inline-block;
+    background-color: #18b3c2;
+    color: white;
+
+    border-radius: 10px;
+    padding: 10px 25px;
+    text-decoration: none;
+    font-size: 25px;
 }
