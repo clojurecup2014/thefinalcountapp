@@ -5,10 +5,10 @@
 ;; :count-up -> Days without...
 ;; :streak -> Github daily count...
 ;; :counter -> Times you've broken the repo
-(def db (atom { "kaleidos-team" {:counters [{:id 1 :type :count-up :value 100 :text "somebody messing up" :last-updated (Date.) :public-reset true}
-                                            {:id 2 :type :streak   :value 350 :text "daily Github commit" :last-updated (Date.) :public-reset true}
-                                            {:id 3 :type :counter  :value 100 :text "we've broken the GIT repo' " :last-updated (Date.) :public-reset false :public-plus true}]
-                                 :name "Kaleidos Team"}}))
+(defonce db (atom { "kaleidos-team" {:counters [{:id 1 :type :count-up :value 100 :text "somebody messing up" :last-updated (Date.) :public-reset true}
+                                                {:id 2 :type :streak   :value 350 :text "daily Github commit" :last-updated (Date.) :public-reset true}
+                                                {:id 3 :type :counter  :value 100 :text "we've broken the GIT repo' " :last-updated (Date.) :public-reset false :public-plus true}]
+                                     :name "Kaleidos Team"}}))
 
 (defn create-group [_ group]
   (swap! db #(assoc % group []))
