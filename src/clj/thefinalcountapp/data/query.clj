@@ -21,9 +21,9 @@
 
 
 (defn create-counter [_ group counter]
-  (let [counter (assoc counter :id (.nextInt (java.util.Random.)))]
+  (let [c (assoc counter :id (Math/abs (.nextInt (java.util.Random.))))]
     (swap! db (fn [groups]
-                (update-in groups [group :counters] #(conj % counter))))
+                (update-in groups [group :counters] #(conj % c))))
     counter))
 
 

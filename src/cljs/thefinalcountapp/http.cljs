@@ -5,17 +5,39 @@
             [cognitect.transit :as t])
   (:import [goog.net XhrIo]
            goog.net.EventType
-           [goog.events EventType]))
+           [goog.events EventType])
+  (:refer-clojure :exclude [get]))
 
-(def ^:private meths
+
+(def transit-content-type "application/transit+json")
+
+
+(def headers #js {"Content-Type" transit-content-type
+                  "Accept"       transit-content-type})
+
+
+(def ^:private method-key->method-string
   {:get "GET"
    :put "PUT"
    :post "POST"
    :delete "DELETE"})
 
+
 (defn send [{:keys [method url data]}]
   (let [c (chan)
-        xhr (XhrIo.)]
+        xhr (XhrIo.)
+        method (method-key->method-string method)
+        data (when data (t/write (t/writer :json) data))]
+
+    (try
+      (.send xhr url
+                 method
+                 data
+                 headers)
+      (catch js/Error e
+        (put! c {:result :error
+                 :message (str (.-message e))})))
+
     (events/listen xhr goog.net.EventType.SUCCESS
                    (fn [e] (put! c (let [response (.getResponseText xhr)
                                          response-obj (if (not-empty response) (t/read (t/reader :json) response) nil)]
@@ -24,11 +46,6 @@
                    (fn [e] (put! c {:result :error
                                     :message (str (.formatMsg_ xhr "Sending request")
                                                (.getResponseText xhr))})))
-    (try (. xhr (send url (meths method)
-                      (when data (t/write (t/writer :json) data))
-                      #js {"Content-Type" "application/transit+json" "Accept" "application/transit+json"}))
-         (catch js/Error e (put! c {:result :error
-                                    :message (str (.-message e))} )))
     c))
 
 

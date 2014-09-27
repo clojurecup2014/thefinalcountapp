@@ -4,7 +4,10 @@
             [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
             [thefinalcountapp.data.query :as query]
+            [thefinalcountapp.data.schemas :as schemas]
+            [schema.core :refer [check]]
             [liberator.core :refer [defresource]]
+            [cognitect.transit :as transit]
             [io.clojure.liberator-transit]))
 
 ;; Resources
@@ -15,16 +18,18 @@
 (defresource group-creation []
   resource-defaults
   :allowed-methods [:post]
+  :malformed? (fn [ctx]
+                (let [body (get-in ctx [:request :body])]
+                  (when (nil? (check schemas/NewGroup body))
+                    {::parsed-entity body})))
   :authorized? (fn [ctx]
-                 (let [body (get-in ctx [:request :body])
-                       group (:group body)
+                 (let [group (::parsed-entity ctx)
                        db (::db ctx)]
-                   (not (query/group-exists? db group))))
+                   (not (query/group-exists? db (:name group)))))
   :post! (fn [ctx]
-           (let [body (get-in ctx [:request :body])
-                 group (:group body)
+           (let [group (::parsed-entity ctx)
                  db (::db ctx)]
-             {::entity (query/create-group db group)}))
+             {::entity (query/create-group db (:name group))}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
@@ -35,6 +40,10 @@
 (defresource group-detail [group]
   resource-defaults
   :allowed-methods [:get]
+  :exists? (fn [ctx]
+             (let [req (:request ctx)
+                   db (::db req)]
+                 (query/group-exists? db group)))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
@@ -57,9 +66,14 @@
 (defresource counter-create [group]
   resource-defaults
   :allowed-methods [:post]
+  :authorized? (fn [ctx]
+                 (let [req (:request ctx)
+                       db (::db req)]
+                   (query/group-exists? db group)))
+  ; FIXME: for some reason the body doesn't get converted from transit
   :post! (fn [ctx]
-           (let [body (get-in ctx [:request :body])
-                 counter (transit/read (transit/reader body :json))
+           (let [counter (get-in ctx [:request :body])
+                 counter (transit/read (transit/reader counter :json))
                  db (::db ctx)]
              {::entity (query/create-counter db group counter)}))
   :post-redirect? false
@@ -87,7 +101,7 @@
   component/Lifecycle
   (start [this]
     (let [wrapped-api-routes (ring-defaults/wrap-defaults #'api-routes ring-defaults/api-defaults)]
-      (assoc this :routes (api-middleware wrapped-api-routes db))))
+      (assoc this :routes (api-middleware #'api-routes db))))
 
   (stop [this]
     (dissoc this :routes)))

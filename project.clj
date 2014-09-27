@@ -21,10 +21,12 @@
 
                  [cats "0.2.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
 
-                 [reagent "0.4.2"]]
-  :main thefinalcountapp.core
-  :plugins [[lein-cljsbuild "1.0.3"]]
+                 [reagent "0.4.2"]
 
+                 [prismatic/schema "0.3.0"]]
+  :main thefinalcountapp.core
+  :plugins [[lein-cljsbuild "1.0.3"]
+            [com.keminglabs/cljx "0.4.0" :exclusions [org.clojure/clojure]]]
   :source-paths ["src/clj"]
   :cljsbuild
   {:builds
@@ -33,4 +35,12 @@
              {;; :preamble ["reagent/react.js"]
               :output-dir "resources/public/js"
               :output-to "resources/public/js/thefinalcountapp.js"
-              :pretty-print true}}}})
+              :pretty-print true}}}}
+  :cljx
+  {:builds [{:source-paths ["src/cljx"]
+             :output-path "src/clj"
+             :rules :clj}
+            {:source-paths ["src/cljx"]
+             :output-path "src/cljs"
+             :rules :cljs}]}
+  :hooks [cljx.hooks])
