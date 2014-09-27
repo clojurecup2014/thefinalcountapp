@@ -16,6 +16,8 @@
                  [com.cognitect/transit-cljs "0.8.188"]
 
                  [com.stuartsierra/component "0.2.2"]
+                 [liberator "0.12.2"]
+                 [io.clojure/liberator-transit "0.3.0"]
 
                  [cats "0.2.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
 
