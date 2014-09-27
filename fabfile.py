@@ -16,9 +16,9 @@ def deploy():
     update_code()
     kill_server()
     clean()
-    compile_cljx()
-    compile_cljs()
-    run_server()
+    build()
+    test()
+    restart_server()
 
 def update_code():
     with cd(PROJECT_DIR):
@@ -29,13 +29,14 @@ def clean():
     with cd(PROJECT_DIR):
         run("lein clean")
 
-def compile_cljx():
+def build():
     with cd(PROJECT_DIR):
         run("lein cljx once")
-
-def compile_cljs():
-    with cd(PROJECT_DIR):
         run("lein cljsbuild once")
+
+def test():
+    with cd(PROJECT_DIR):
+        run("lein test")
 
 def kill_server():
     run("pkill java", warn_only=True)
@@ -43,6 +44,10 @@ def kill_server():
 def run_server():
     with cd(PROJECT_DIR):
         run_bg("lein run")
+
+def restart_server():
+    kill_server()
+    run_server()
 
 def run_bg(cmd):
     run("dtach -n `mktemp -u /tmp/{socket}.XXXX` {cmd}".format(socket="dtach", cmd=cmd))
