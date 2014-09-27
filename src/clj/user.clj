@@ -13,3 +13,9 @@
 
 (defn stop []
   (alter-var-root #'system component/stop))
+
+
+(defn reboot []
+  (stop)
+  (refresh)
+  (start))
