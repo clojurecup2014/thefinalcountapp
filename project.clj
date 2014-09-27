@@ -11,6 +11,7 @@
                  [http-kit "2.1.19"]
                  [compojure "1.1.9"]
                  [ring "1.3.1"]
+                 [ring/ring-defaults "0.1.2"]
                  [hiccup "1.0.5"]
                  [com.cognitect/transit-clj "0.8.247"]
                  [com.cognitect/transit-cljs "0.8.188"]
@@ -20,4 +21,5 @@
                  [cats "0.2.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
 
                  [reagent "0.4.2"]]
+  :main thefinalcountapp.core
   :plugins [[lein-cljsbuild "1.0.3"]])
