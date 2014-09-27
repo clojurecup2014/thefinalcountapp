@@ -101,7 +101,7 @@
   component/Lifecycle
   (start [this]
     (let [wrapped-api-routes (ring-defaults/wrap-defaults #'api-routes ring-defaults/api-defaults)]
-      (assoc this :routes (api-middleware #'wrapped-api-routes db))))
+      (assoc this :routes (api-middleware wrapped-api-routes db))))
 
   (stop [this]
     (dissoc this :routes)))

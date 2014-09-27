@@ -15,6 +15,8 @@ PROJECT_DIR = "/home/cloudsigma/thefinalcountapp"
 def deploy():
     update_code()
     kill_server()
+    clean()
+    compile_cljx()
     compile_cljs()
     run_server()
 
@@ -22,6 +24,14 @@ def update_code():
     with cd(PROJECT_DIR):
         run("git reset --hard HEAD")
         run("git pull --rebase origin master")
+
+def clean():
+    with cd(PROJECT_DIR):
+        run("lein clean")
+
+def compile_cljx():
+    with cd(PROJECT_DIR):
+        run("lein cljx once")
 
 def compile_cljs():
     with cd(PROJECT_DIR):
