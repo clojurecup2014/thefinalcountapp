@@ -29,13 +29,36 @@
     (dissoc this :pool)))
 
 ; Public API
+
 (defn create-group [_ group-name]
   (swap! db #(assoc % group-name []))
   {:name group-name
    :counters (@db group-name)})
 
+
 (defn get-group [_ group-name]
   (@db group-name))
 
+
+(defn create-counter [_ group-name counter]
+  ; TODO
+  {:id 1
+   :type :count-up
+   :value 100
+   :text "somebody messing up"
+   :last-updated (Date.)
+   :public-reset true})
+
+
 (defn get-counter [_ group-name counter-id]
   (first (@db group-name)))
+
+
+(defn update-counter [_ group-name counter-id new-counter]
+  ; TODO
+  {:id 1
+   :type :count-up
+   :value 100
+   :text "somebody messing up"
+   :last-updated (Date.)
+   :public-reset true})
