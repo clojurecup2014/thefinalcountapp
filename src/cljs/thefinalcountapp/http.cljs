@@ -30,3 +30,12 @@
          (catch js/Error e (put! c {:result :error
                                     :message (str (.-message e))} )))
     c))
+
+
+
+(defn get [url]
+  (send {:method :get, :url url}))
+
+
+(defn post [url data]
+  (send {:method :post, :url url, :data data}))

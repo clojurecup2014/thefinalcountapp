@@ -10,7 +10,7 @@
 
 
 (defn ^:export run []
-  (go (let [response (<! (http/send {:method :get :url "/api/counters/kaleidos-team"}))]
+  (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
         (.log js/console (-> response :data first :text))))
   (reagent/render-component [main-component]
                             (.-body js/document)))
