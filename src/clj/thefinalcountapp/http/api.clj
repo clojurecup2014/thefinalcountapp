@@ -13,6 +13,11 @@
 (defresource group-list []
   resource-defaults
   :allowed-methods [:post]
+  :authorized? (fn [ctx]
+                 (let [body (get-in ctx [:request :body])
+                       group (:group body)
+                       db (::db ctx)]
+                   (not (data/group-exists? db group))))
   :post! (fn [ctx]
            (let [body (get-in ctx [:request :body])
                  group (:group body)

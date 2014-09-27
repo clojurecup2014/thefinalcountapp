@@ -49,6 +49,9 @@
    :last-updated (Date.)
    :public-reset true})
 
+(defn group-exists? [_ group]
+  (contains? @db group))
+
 
 (defn get-counter [_ group-name counter-id]
   (first (@db group-name)))
