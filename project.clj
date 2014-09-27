@@ -12,7 +12,6 @@
                  [compojure "1.1.9"]
                  [ring "1.3.1"]
                  [ring/ring-defaults "0.1.2"]
-                 [hiccup "1.0.5"]
                  [com.cognitect/transit-clj "0.8.247"]
                  [com.cognitect/transit-cljs "0.8.188"]
 
@@ -22,4 +21,14 @@
 
                  [reagent "0.4.2"]]
   :main thefinalcountapp.core
-  :plugins [[lein-cljsbuild "1.0.3"]])
+  :plugins [[lein-cljsbuild "1.0.3"]]
+
+  :source-paths ["src/clj"]
+  :cljsbuild
+  {:builds
+   {:client {:source-paths ["src/cljs"]
+             :compiler
+             {:preamble ["reagent/react.js"]
+              :output-dir "resources/public/js"
+              :output-to "resources/public/js/thefinalcountapp.js"
+              :pretty-print true}}}})
