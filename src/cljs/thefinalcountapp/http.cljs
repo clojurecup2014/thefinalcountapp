@@ -56,3 +56,7 @@
 
 (defn post [url data]
   (send {:method :post, :url url, :data data}))
+
+
+(defn put [url data]
+  (send {:method :put, :url url, :data data}))

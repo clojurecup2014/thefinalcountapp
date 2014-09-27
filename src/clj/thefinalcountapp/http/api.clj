@@ -56,11 +56,11 @@
   :exists? (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-                 (query/counter-exists? db group  (Integer/parseInt counter-id))))
+                 (query/counter-exists? db group counter-id)))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (query/get-counter db group (Integer/parseInt counter-id)))))
+                 (query/get-counter db group counter-id))))
 
 
 (defresource counter-create [group]
@@ -83,12 +83,34 @@
   :handle-ok ::entity)
 
 
+(defresource counter-update [group counter-id]
+  resource-defaults
+  :allowed-methods [:put]
+  :exists? (fn [ctx]
+             (let [req (:request ctx)
+                   db (::db req)]
+                 (query/counter-exists? db group counter-id)))
+  ; FIXME: for some reason the body doesn't get converted from transit
+  :put! (fn [ctx]
+          (let [body (get-in ctx [:request :body])
+                counter (transit/read (transit/reader body :json))
+                db (::db ctx)]
+            {::entity (query/update-counter db group counter-id counter)}))
+  :conflict? false
+  :post-redirect? false
+  :new? false
+  :respond-with-entity? true
+  :multiple-representations? false
+  :handle-ok ::entity)
+
+
 ;; Routes
 (defroutes api-routes
   (POST "/api/counters" [] (group-creation))
   (GET "/api/counters/:group" [group] (group-detail group))
   (POST "/api/counters/:group" [group] (counter-create group))
-  (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group id)))
+  (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group (Integer/parseInt id)))
+  (PUT ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-update group (Integer/parseInt id))))
 
 
 ;; Component

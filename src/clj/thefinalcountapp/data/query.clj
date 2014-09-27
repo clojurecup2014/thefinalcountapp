@@ -42,10 +42,9 @@
 
 
 (defn update-counter [_ group counter-id new-counter]
-  ; TODO
-  {:id 1
-   :type :count-up
-   :value 100
-   :text "somebody messing up"
-   :last-updated (Date.)
-   :public-reset true})
+  (let [old-counter (get-counter _ group counter-id)
+        counters (vec (filter #(not= counter-id (:id %)) (:counters (get-group _ group))))
+        updated-counter (merge old-counter new-counter)
+        new-counters (conj counters updated-counter)]
+   (swap! db #(assoc-in % [group :counters] new-counters))
+   updated-counter))
