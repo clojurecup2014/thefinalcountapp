@@ -30,7 +30,7 @@
   {:builds
    {:client {:source-paths ["src/cljs"]
              :compiler
-             {:preamble ["reagent/react.js"]
+             {;; :preamble ["reagent/react.js"]
               :output-dir "resources/public/js"
               :output-to "resources/public/js/thefinalcountapp.js"
               :pretty-print true}}}})
