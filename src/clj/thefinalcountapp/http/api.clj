@@ -3,7 +3,7 @@
             [com.stuartsierra.component :as component]
             [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
-            [thefinalcountapp.data.query :as query]
+            [thefinalcountapp.data.store :as store]
             [thefinalcountapp.data.schemas :as schemas]
             [schema.core :refer [check]]
             [liberator.core :refer [defresource]]
@@ -25,11 +25,11 @@
   :authorized? (fn [ctx]
                  (let [group (::parsed-entity ctx)
                        db (::db ctx)]
-                   (not (query/group-exists? db (:name group)))))
+                   (not (store/group-exists? db (:name group)))))
   :post! (fn [ctx]
            (let [group (::parsed-entity ctx)
                  db (::db ctx)]
-             {::entity (query/create-group db (:name group))}))
+             {::entity (store/create-group db (:name group))}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
@@ -43,11 +43,11 @@
   :exists? (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-                 (query/group-exists? db group)))
+                 (store/group-exists? db group)))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (query/get-group db group))))
+                 (store/get-group db group))))
 
 
 (defresource counter-detail [group counter-id]
@@ -56,11 +56,11 @@
   :exists? (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-                 (query/counter-exists? db group counter-id)))
+                 (store/counter-exists? db group counter-id)))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (query/get-counter db group counter-id))))
+                 (store/get-counter db group counter-id))))
 
 
 (defresource counter-create [group]
@@ -69,13 +69,13 @@
   :authorized? (fn [ctx]
                  (let [req (:request ctx)
                        db (::db req)]
-                   (query/group-exists? db group)))
+                   (store/group-exists? db group)))
   ; FIXME: for some reason the body doesn't get converted from transit
   :post! (fn [ctx]
            (let [counter (get-in ctx [:request :body])
                  counter (transit/read (transit/reader counter :json))
                  db (::db ctx)]
-             {::entity (query/create-counter db group counter)}))
+             {::entity (store/create-counter db group counter)}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
@@ -89,13 +89,13 @@
   :exists? (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-                 (query/counter-exists? db group counter-id)))
+                 (store/counter-exists? db group counter-id)))
   ; FIXME: for some reason the body doesn't get converted from transit
   :put! (fn [ctx]
           (let [body (get-in ctx [:request :body])
                 counter (transit/read (transit/reader body :json))
                 db (::db ctx)]
-            {::entity (query/update-counter db group counter-id counter)}))
+            {::entity (store/update-counter db group counter-id counter)}))
   :conflict? false
   :post-redirect? false
   :new? false

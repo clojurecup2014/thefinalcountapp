@@ -1,0 +1,53 @@
+(ns thefinalcountapp.data.memory
+  (:require [com.stuartsierra.component :as component]
+            [thefinalcountapp.data.store :as s]))
+
+
+(defrecord InMemoryDatabase [store]
+  component/Lifecycle
+  (start [this]
+    this)
+
+  (stop [this]
+    (reset! store {})
+    this)
+
+  s/Store
+  (create-group [_ name]
+    (let [gr {:name name
+              :counters []}]
+      (swap! store #(assoc % name gr))))
+
+
+  (get-group [_ group]
+    (@store group))
+
+
+  (group-exists? [_ group]
+    (contains? @store group))
+
+
+  (create-counter [_ group counter]
+    (let [c (assoc counter :id (Math/abs (.nextInt (java.util.Random.))))]
+      (swap! store (fn [groups]
+                  (update-in groups [group :counters] #(conj % c))))
+      c))
+
+
+  (counter-exists? [_ group id]
+    (when-let [gr (s/get-group _ group)]
+      (some #(= id (:id %)) (:counters gr))))
+
+
+  (get-counter [_ group id]
+    (when-let [gr (s/get-group _ group)]
+      (first (filter #(= id (:id %)) (:counters gr)))))
+
+
+  (update-counter [_ group counter-id new-counter]
+    (let [old-counter (s/get-counter _ group counter-id)
+          counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))
+          updated-counter (merge old-counter new-counter)
+          new-counters (conj counters updated-counter)]
+     (swap! store #(assoc-in % [group :counters] new-counters))
+     updated-counter)))

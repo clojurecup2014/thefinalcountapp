@@ -1,7 +1,8 @@
 (ns user
   (:require [com.stuartsierra.component :as component]
             [thefinalcountapp.core :refer [make-system]]
-            [clojure.tools.namespace.repl :refer [refresh]]))
+            [clojure.tools.namespace.repl :refer [refresh]]
+            [clojure.test :refer [run-tests]]))
 
 
 (defonce system (make-system))
@@ -19,3 +20,8 @@
   (stop)
   (refresh)
   (start))
+
+
+(defn test-all []
+  (refresh)
+  (run-tests 'thefinalcountapp.memory-store-test))
