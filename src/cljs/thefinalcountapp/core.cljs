@@ -50,10 +50,21 @@
      [counter-list]
      ]]])
 
+(defn update-timer [state]
+  (let [old (:displaying state)
+        size (-> state :counters count)
+        new (if (< (inc old) size) (inc old) 0)]
+    (assoc state :displaying new)))
+
+(defn update-counters []
+  (js/setInterval (fn []
+                   (swap! state update-timer)) 3000))
 
 (defn ^:export run []
   (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
         (.log js/console (str response))
         (swap! state #(assoc % :counters (-> response :data :counters)))))
+
+  (update-counters)
   (reagent/render-component [main-component]
                             (. js/document (getElementById "main"))))
