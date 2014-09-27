@@ -30,20 +30,20 @@
 
 ; Public API
 
-(defn create-group [_ group-name]
-  (swap! db #(assoc % group-name []))
-  {:name group-name
-   :counters (@db group-name)})
+(defn create-group [_ group]
+  (swap! db #(assoc % group []))
+  {:name group
+   :counters (@db group)})
 
 
-(defn get-group [_ group-name]
-  (get-in @db [group-name :counters]))
+(defn get-group [_ group]
+  (@db group))
 
 
-(defn create-counter [_ group-name counter]
+(defn create-counter [_ group counter]
   (let [counter (assoc counter :id (str (java.util.UUID/randomUUID)))]
     (swap! db (fn [groups]
-                (update-in groups [group-name :counters] #(conj % counter))))
+                (update-in groups [group :counters] #(conj % counter))))
     counter))
 
 
@@ -51,11 +51,17 @@
   (contains? @db group))
 
 
-(defn get-counter [_ group-name counter-id]
-  (first (@db group-name)))
+(defn counter-exists? [_ group id]
+  (when-let [gr (get-group _ group)]
+    (some #(= id (:id %)) (:counters gr))))
 
 
-(defn update-counter [_ group-name counter-id new-counter]
+(defn get-counter [_ group id]
+  (when-let [gr (get-group _ group)]
+    (first (filter #(= id (:id %)) (:counters gr)))))
+
+
+(defn update-counter [_ group counter-id new-counter]
   ; TODO
   {:id 1
    :type :count-up

@@ -11,6 +11,7 @@
 (def resource-defaults
   {:available-media-types ["application/transit+json"]})
 
+
 (defresource group-creation []
   resource-defaults
   :allowed-methods [:post]
@@ -30,6 +31,7 @@
   :multiple-representations? false
   :handle-ok ::entity)
 
+
 (defresource group-detail [group]
   resource-defaults
   :allowed-methods [:get]
@@ -42,10 +44,15 @@
 (defresource counter-detail [group counter-id]
   resource-defaults
   :allowed-methods [:get]
+  :exists? (fn [ctx]
+             (let [req (:request ctx)
+                   db (::db req)]
+                 (data/counter-exists? db group  (Integer/parseInt counter-id))))
   :handle-ok (fn [ctx]
                (let [req (:request ctx)
                      db (::db req)]
-                 (data/get-counter db group counter-id))))
+                 (data/get-counter db group (Integer/parseInt counter-id)))))
+
 
 (defresource counter-create [group]
   resource-defaults
@@ -67,7 +74,7 @@
   (POST "/api/counters" [] (group-creation))
   (GET "/api/counters/:group" [group] (group-detail group))
   (POST "/api/counters/:group" [group] (counter-create group))
-  (GET "/api/counters/:group/:id" [group id] (counter-detail group id)))
+  (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group id)))
 
 
 ;; Component
