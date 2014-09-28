@@ -121,6 +121,37 @@
               (store/delete-counter db group counter-id))))
 
 
+(defresource counter-increment [group counter-id]
+  resource-defaults
+  :allowed-methods [:post]
+  :exists? (fn [ctx]
+             (let [db (::db (:request ctx))]
+               (store/counter-exists? db group counter-id)))
+  :authorized? (fn [ctx]
+                 (let [db (::db (:request ctx))]
+                   (= :counter (:type (store/get-counter db group counter-id)))))
+  :post! (fn [ctx]
+           (let [db (::db (:request ctx))]
+             (store/increment-counter db group counter-id)))
+  :post-redirect? false
+  :new? false
+  :respond-with-entity? false)
+
+
+(defresource counter-reset [group counter-id]
+  resource-defaults
+  :allowed-methods [:post]
+  :exists? (fn [ctx]
+             (let [db (::db (:request ctx))]
+               (store/counter-exists? db group counter-id)))
+  :post! (fn [ctx]
+           (let [db (::db (:request ctx))]
+             (store/reset-counter db group counter-id)))
+  :post-redirect? false
+  :new? false
+  :respond-with-entity? false)
+
+
 ;; Routes
 (defroutes api-routes
   (POST "/api/counters" [] (group-creation))
@@ -128,6 +159,8 @@
   (POST "/api/counters/:group" [group] (counter-create group))
   (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group (Integer/parseInt id)))
   (PUT ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-update group (Integer/parseInt id)))
+  (POST ["/api/counters/:group/:id/increment", :id #"[0-9]+"] [group id] (counter-increment group (Integer/parseInt id)))
+  (POST ["/api/counters/:group/:id/reset", :id #"[0-9]+"] [group id] (counter-reset group (Integer/parseInt id)))
   (DELETE ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-delete group (Integer/parseInt id))))
 
 

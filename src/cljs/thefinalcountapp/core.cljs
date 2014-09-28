@@ -64,12 +64,7 @@
 ;(.log js/console (time/days-since (js/Date. 2014 09 01)))
 
 (defn ^:export run []
-  (go (let [response (<! (http/get "/api/counters/kaleidos-team"))
-            data (:data response)
-            counters (:counters data)
-            c (nth counters 2)
-            _ (.log js/console (time/days-since (:last-updated c)))]
-        (.log js/console (str response))
+  (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
         (swap! state #(assoc % :counters (-> response :data :counters)))))
 
   (update-counters)
