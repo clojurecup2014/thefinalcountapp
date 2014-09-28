@@ -28,11 +28,13 @@
                     {::parsed-entity body})))
   :authorized? (fn [ctx]
                  (let [group (::parsed-entity ctx)
-                       db (::db ctx)]
+                       req (:request ctx)
+                       db (::db req)]
                    (not (store/group-exists? db (:name group)))))
   :post! (fn [ctx]
            (let [group (::parsed-entity ctx)
-                 db (::db ctx)]
+                 req (:request ctx)
+                 db (::db req)]
              {::entity (store/create-group db (:name group))}))
   :post-redirect? false
   :new? false
@@ -100,7 +102,8 @@
   :put! (fn [ctx]
           (let [body (get-in ctx [:request :body])
                 counter (transit/read (transit/reader body :json))
-                db (::db ctx)
+                req (:request ctx)
+                db (::db req)
                 updated-counter (store/update-counter db group counter-id counter)]
             (pubsub/notify :counter/updated group {:group group :id (:id counter)})
             {::entity updated-counter}))
@@ -121,7 +124,6 @@
   :delete! (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-
               (store/delete-counter db group counter-id)
               (pubsub/notify :counter/deleted group {:group group :id counter-id}))))
 
