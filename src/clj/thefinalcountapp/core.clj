@@ -4,7 +4,6 @@
             [thefinalcountapp.http.routes :as routes]
             [thefinalcountapp.http.pubsub :as pubsub]
             [clj-time.core :as time]
-            ;;[thefinalcountapp.data.store :as store]
             [thefinalcountapp.data.memory :as memstore]
             [com.stuartsierra.component :as component]))
 
