@@ -50,7 +50,7 @@
    [:div
     [:img {:class "logo" :src "/images/logo.svg" :alt "The Final Count App"}]
     [:div {:class "content-buttons"}
-     [:a {:class "group" :href "#"} "Kaleidos Team"]
+     [:a {:class "group" :href "http://www.kaleidos.net?language=en" :target "_blank"} "Kaleidos Team"]
      [:a {:class "add-btn" :href "/create.html"} "+"]]]
    [:div#content
     [:svg {:width "100%" :height "100%"}
