@@ -127,11 +127,11 @@
     )
   )
 (defn counter [counter-data]
-  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"}}
+  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"} :data-uid (str (:id counter-data))}
       (render-counter counter-data)])
 
 (defn counter-with-buttons [counter-data cb-reset cb-add]
-  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"}}
+  [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"} :data-uid (str (:id counter-data))}
    (concat (render-counter counter-data)
            (list [button-reset #(cb-reset (:id counter-data))])
            (list [(if (= (:type counter-data) :counter) button-plus :g ) #(cb-add (:id counter-data))]))
