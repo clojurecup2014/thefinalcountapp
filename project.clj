@@ -18,15 +18,18 @@
                  [com.stuartsierra/component "0.2.2"]
                  [liberator "0.12.2"]
                  [io.clojure/liberator-transit "0.3.0"]
+                 [clj-time "0.8.0"]
 
                  [cats "0.2.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
 
                  [reagent "0.4.2"]
+                 [com.andrewmcveigh/cljs-time "0.2.0"]
 
                  [prismatic/schema "0.3.0"]]
   :main thefinalcountapp.core
   :plugins [[lein-cljsbuild "1.0.3"]
-            [com.keminglabs/cljx "0.4.0" :exclusions [org.clojure/clojure]]]
+            [com.keminglabs/cljx "0.4.0" :exclusions [org.clojure/clojure]]
+            [com.cemerick/austin "0.1.5"]]
   :source-paths ["src/clj"]
   :cljsbuild
   {:builds

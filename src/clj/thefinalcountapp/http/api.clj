@@ -3,16 +3,19 @@
             [com.stuartsierra.component :as component]
             [cognitect.transit :as transit]
             [ring.middleware.defaults :as ring-defaults]
+            [thefinalcountapp.time :as time]
             [thefinalcountapp.data.store :as store]
             [thefinalcountapp.data.schemas :as schemas]
             [schema.core :refer [check]]
             [liberator.core :refer [defresource]]
             [cognitect.transit :as transit]
-            [io.clojure.liberator-transit]))
+            [io.clojure.liberator-transit :as lt])
+  (:import [org.joda.time DateTime]))
 
 ;; Resources
 (def resource-defaults
-  {:available-media-types ["application/transit+json"]})
+  {:available-media-types ["application/transit+json"]
+   :as-response (lt/as-response {:handlers {DateTime time/joda-time-writer}})})
 
 
 (defresource group-creation []

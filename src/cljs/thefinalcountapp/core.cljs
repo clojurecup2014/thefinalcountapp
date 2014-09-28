@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
             [thefinalcountapp.http :as http]
+            [thefinalcountapp.time :as time]
             [thefinalcountapp.components.counter :refer [counter]]
             [cljs.core.async :refer [<!]]))
 
@@ -59,8 +60,15 @@
   (js/setInterval (fn []
                    (swap! state update-timer)) 3000))
 
+;(.log js/console "Lol")
+;(.log js/console (time/days-since (js/Date. 2014 09 01)))
+
 (defn ^:export run []
-  (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
+  (go (let [response (<! (http/get "/api/counters/kaleidos-team"))
+            data (:data response)
+            counters (:counters data)
+            c (nth counters 2)
+            _ (.log js/console (time/days-since (:last-updated c)))]
         (.log js/console (str response))
         (swap! state #(assoc % :counters (-> response :data :counters)))))
 
