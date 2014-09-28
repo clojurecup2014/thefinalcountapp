@@ -10,21 +10,8 @@
                   :counters []
                   :displaying 0}))
 
-;; (defn main-component []
-;;   [:div.content
-;;    [counter]
-;;    [:ul (for [item (:counters @state)] ^{:key item} [:li "Counter: " (:text item)])]
-;;    [:p (str ">>" (count (:counters @state)))]])
-
-;(defn main-component []
-;  [:div.content
-;   [:svg {:width "100%" :height "100%"}
-;    [:g {:transform "translate(680, 300)"}
-;     [:g {:transform "scale(1.0, 1.0)"} [counter]]]]])
-
 (defn index-of [coll v]
-  (let [i (count (take-while #(not= v (:id %)) coll))
-        _ (.log js/console (str i " " coll " " v))]
+  (let [i (count (take-while #(not= v (:id %)) coll))]
     (when (or (< i (count coll))
               (= v (:id (last coll))))
       i)))
@@ -32,7 +19,9 @@
 (defn reset-counter [state id]
   (let [idx-counter (index-of (:counters state) id)]
     (http/post (str "/api/counters/kaleidos-team/" id "/reset") {})
-    (update-in state [:counters idx-counter :value] (fn [_] 0))))
+    (-> state
+        (update-in [:counters idx-counter :last-updated] (fn [_] (js/Date.)))
+        (update-in [:counters idx-counter :value] (fn [_] 0)))))
 
 (defn reset-date [state id]
   (let [idx-counter (index-of (:counters state) id)]
@@ -42,7 +31,9 @@
 (defn increment-counter [state id]
   (let [idx-counter (index-of (:counters state) id)]
     (http/post (str "/api/counters/kaleidos-team/" id "/increment") {})
-    (update-in state [:counters idx-counter :value] inc)))
+    (-> state
+        (update-in [:counters idx-counter :last-updated] (fn [_] (js/Date.)))
+        (update-in [:counters idx-counter :value] inc))))
 
 (defn counter-list []
   (if (>= (count (:counters @state)) 3)

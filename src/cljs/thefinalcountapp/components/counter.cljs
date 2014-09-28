@@ -1,5 +1,6 @@
 (ns thefinalcountapp.components.counter
   (:require [goog.string :as gstring]
+            [goog.i18n.DateTimeFormat]
             [thefinalcountapp.time :as time]))
 
 
@@ -35,6 +36,10 @@
     :counter (:value counter)
     :count-up (time/days-since (:last-updated counter))
     :streak (time/days-since (:last-updated counter))))
+
+(defn format-date [date]
+  (.format (goog.i18n.DateTimeFormat. (.-MEDIUM_DATETIME goog.i18n.DateTimeFormat.Format))
+           (js/Date. date)))
 
 (defn button-share []
   [:g {:transform "translate(64,-10)"}
@@ -78,7 +83,7 @@
         color-light ((:color counter-data) banner-colors)
         color-dark ((:color counter-data) banner-colors-dark)
         color-darker ((:color counter-data) banner-colors-darker)
-        reset-text (str "Last reset: " (:last-updated counter-data) )]
+        reset-text (str "Last reset: " (format-date (:last-updated counter-data)) )]
     (list
      [:rect {:width "482.69235" :height "487.99667" :rx "7.2934284" :ry "7.2934284" :x "415.93054" :y "323.10889" :style #js {"fill" "#989898" "fill-opacity" "1" "stroke" "none"}}]
      [:rect {:width "482.69235" :height "487.99667" :rx "7.2934284" :ry "7.2934284" :x "415.93054" :y "317.48282" :style #js {"fill" "#ffffff" "fill-opacity" "1" "stroke" "none"}}]
