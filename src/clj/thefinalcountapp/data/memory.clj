@@ -4,20 +4,22 @@
             [clj-time.core :as time]))
 
 
-(defrecord InMemoryAtomDatabase [store]
+(defrecord InMemoryRefDatabase [store]
   component/Lifecycle
   (start [this]
     this)
 
   (stop [this]
-    (reset! store {})
+    (dosync
+      (ref-set store {}))
     this)
 
   s/Store
   (create-group [_ name]
     (let [gr {:name name
               :counters []}]
-      (swap! store #(assoc % name gr))))
+      (dosync
+        (alter store assoc name gr))))
 
 
   (get-group [_ group]
@@ -30,8 +32,9 @@
 
   (create-counter [_ group counter]
     (let [c (assoc counter :id (java.util.UUID/randomUUID))]
-      (swap! store (fn [groups]
-                  (update-in groups [group :counters] #(conj % c))))
+      (dosync
+       (alter store (fn [groups]
+                      (update-in groups [group :counters] #(conj % c)))))
       c))
 
 
@@ -46,13 +49,13 @@
 
 
   (update-counter [_ group counter-id new-counter]
-    ; TODO: ref, run in transaction
-    (let [old-counter (s/get-counter _ group counter-id)
-          counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))
-          updated-counter (merge old-counter new-counter)
-          new-counters (conj counters updated-counter)]
-     (swap! store #(assoc-in % [group :counters] new-counters))
-     updated-counter))
+    (dosync
+      (let [old-counter (s/get-counter _ group counter-id)
+            counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))
+            updated-counter (merge old-counter new-counter)
+            new-counters (conj counters updated-counter)]
+       (alter store assoc-in [group :counters] new-counters)
+       updated-counter)))
 
   (increment-counter [_ group counter-id]
     (let [old-counter (s/get-counter _ group counter-id)]
@@ -65,9 +68,10 @@
         (s/update-counter _ group counter-id {:last-updated (time/now)}))))
 
   (delete-counter [_ group counter-id]
-    (let [new-counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))]
-      (swap! store #(assoc-in % [group :counters] new-counters)))))
+    (dosync
+      (let [new-counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))]
+        (alter store assoc-in [group :counters] new-counters)))))
 
 
 (defn in-memory-store [initial-data]
-  (->InMemoryAtomDatabase (atom initial-data)))
+  (->InMemoryRefDatabase (ref initial-data)))
