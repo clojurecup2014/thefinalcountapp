@@ -46,5 +46,4 @@
              :rules :clj}
             {:source-paths ["src/cljx"]
              :output-path "src/cljs"
-             :rules :cljs}]}
-  :hooks [cljx.hooks])
+             :rules :cljs}]})
