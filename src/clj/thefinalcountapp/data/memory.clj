@@ -29,7 +29,7 @@
 
 
   (create-counter [_ group counter]
-    (let [c (assoc counter :id (Math/abs (.nextInt (java.util.Random.))))]
+    (let [c (assoc counter :id (java.util.UUID/randomUUID))]
       (swap! store (fn [groups]
                   (update-in groups [group :counters] #(conj % c))))
       c))
@@ -46,6 +46,7 @@
 
 
   (update-counter [_ group counter-id new-counter]
+    ; TODO: ref, run in transaction
     (let [old-counter (s/get-counter _ group counter-id)
           counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))
           updated-counter (merge old-counter new-counter)

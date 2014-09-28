@@ -22,8 +22,7 @@
   [{:as ev :keys [event id ?data ring-req ?reply-fn send-fn]}]
   (let [[ev payload] ?data]
     (case (first ?data)
-      :group/subscribed (do (.log js/console "Subscribed to " payload) ; FIXME: just for testing
-                            (unsubscribe "kaleidos-team"))
+      :group/subscribed (.log js/console "Subscribed to " payload)
       :group/unsubscribed (.log js/console "Unsubscribed from " payload)
       :counter/updated (.log js/console "Counter updated " payload)
       :counter/created (.log js/console "Counter created " payload))))

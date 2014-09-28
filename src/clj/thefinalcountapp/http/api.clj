@@ -157,11 +157,11 @@
   (POST "/api/counters" [] (group-creation))
   (GET "/api/counters/:group" [group] (group-detail group))
   (POST "/api/counters/:group" [group] (counter-create group))
-  (GET ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-detail group (Integer/parseInt id)))
-  (PUT ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-update group (Integer/parseInt id)))
-  (POST ["/api/counters/:group/:id/increment", :id #"[0-9]+"] [group id] (counter-increment group (Integer/parseInt id)))
-  (POST ["/api/counters/:group/:id/reset", :id #"[0-9]+"] [group id] (counter-reset group (Integer/parseInt id)))
-  (DELETE ["/api/counters/:group/:id", :id #"[0-9]+"] [group id] (counter-delete group (Integer/parseInt id))))
+  (GET "/api/counters/:group/:id" [group id] (counter-detail group (java.util.UUID/fromString id)))
+  (PUT "/api/counters/:group/:id" [group id] (counter-update group (java.util.UUID/fromString id)))
+  (POST "/api/counters/:group/:id/increment" [group id] (counter-increment group (java.util.UUID/fromString id)))
+  (POST "/api/counters/:group/:id/reset" [group id] (counter-reset group (java.util.UUID/fromString id)))
+  (DELETE "/api/counters/:group/:id" [group id] (counter-delete group (java.util.UUID/fromString id))))
 
 
 ;; Component
