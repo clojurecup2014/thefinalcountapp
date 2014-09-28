@@ -44,11 +44,15 @@
   (.log js/console id))
 
 ;;; Client actions
-(defn subscribe [group]
-  (chsk-send! [:group/subscribe {:group group :uid (:uid @chsk-state)}]))
+(defn subscribe [group timeout cb]
+  (chsk-send! [:group/subscribe {:group group :uid (:uid @chsk-state)}]
+              timeout
+              cb))
 
-(defn unsubscribe [group]
-  (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]))
+(defn unsubscribe [group timeout cb]
+  (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]
+              timeout
+              cb))
 
 
 ;; Subscribe
