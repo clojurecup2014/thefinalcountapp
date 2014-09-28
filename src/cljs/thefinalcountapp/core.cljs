@@ -48,7 +48,7 @@
 (defn main-component []
   [:div
    [:div
-    [:img {:class "logo" :src "/images/logo.png" :alt "The Final Count App"}]
+    [:img {:class "logo" :src "/images/logo.svg" :alt "The Final Count App"}]
     [:div {:class "content-buttons"}
      [:a {:class "group" :href "#"} "Kaleidos Team"]
      [:a {:class "add-btn" :href "/create.html"} "+"]]]
