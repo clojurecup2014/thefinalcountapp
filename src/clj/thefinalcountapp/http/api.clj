@@ -88,7 +88,8 @@
   :post-redirect? false
   :new? false
   :respond-with-entity? true
-  :multiple-representations? false)
+  :multiple-representations? false
+  :handle-ok ::entity)
 
 
 (defresource counter-update [group counter-id]
@@ -111,7 +112,8 @@
   :post-redirect? false
   :new? false
   :respond-with-entity? true
-  :multiple-representations? false)
+  :multiple-representations? false
+  :handle-ok ::entity)
 
 
 (defresource counter-delete [group counter-id]
