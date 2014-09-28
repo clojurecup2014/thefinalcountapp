@@ -1,10 +1,5 @@
 (ns thefinalcountapp.events
-  (:require-macros
-   [cljs.core.async.macros :as async :refer (go go-loop)])
-  (:require
-   [cljs.core.async :as async :refer (<! >! put! chan)]
-   [taoensso.sente  :as sente :refer (cb-success?)]
-  ))
+  (:require [taoensso.sente  :as sente]))
 
 
 (let [{:keys [chsk ch-recv send-fn state]}
