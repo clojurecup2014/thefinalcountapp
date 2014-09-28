@@ -37,7 +37,7 @@
 
   (counter-exists? [_ group id]
     (when-let [gr (s/get-group _ group)]
-      (some #(= id (:id %)) (:counters gr))))
+      (some #(.equals id (:id %)) (:counters gr))))
 
 
   (get-counter [_ group id]

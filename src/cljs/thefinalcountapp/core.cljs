@@ -80,8 +80,24 @@
 
 (defn ^:export run []
   (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
+        (.log js/console (str (-> response :data :counters)))
         (swap! state #(assoc % :counters (-> response :data :counters)))))
 
   (update-counters)
   (reagent/render-component [main-component]
                             (. js/document (getElementById "main"))))
+
+(comment
+
+(defn increment [id]
+  (go  (<! (http/post (str "/api/counters/kaleidos-team/" id "/increment")))))
+
+(defn delete [id]
+  (go  (<! (http/delete (str "/api/counters/kaleidos-team/" id)))))
+
+(go
+  (<! (async/timeout 1000))
+    (<! (http/post "/api/counters/kaleidos-team" {:color :red :type :streak :text "FFFFFOFOFOFOOF"}))
+
+    )
+)

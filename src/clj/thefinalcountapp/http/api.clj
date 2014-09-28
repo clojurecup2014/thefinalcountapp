@@ -105,7 +105,7 @@
                 req (:request ctx)
                 db (::db req)
                 updated-counter (store/update-counter db group counter-id counter)]
-            (pubsub/notify :counter/updated group {:group group :id (:id counter)})
+            (pubsub/notify :counter/updated group {:group group :id counter-id})
             {::entity updated-counter}))
   :conflict? false
   :post-redirect? false
