@@ -8,9 +8,9 @@
             [thefinalcountapp.data.memory :as memstore]
             [com.stuartsierra.component :as component]))
 
-(defonce initial-data (atom {"kaleidos-team" {:counters [{:id 1 :type :count-up :text "somebody messing up with the git repo" :last-updated (time/date-time 2014 9 27) :public-reset true}
-                                                         {:id 2 :type :streak   :text "daily Github commit" :last-updated (time/date-time 2014 8 3) :public-reset true}
-                                                         {:id 3 :type :counter  :value 42 :text "we've broken the GIT repo' " :last-updated (time/date-time 2012 1 10) :public-reset false :public-plus true}]
+(defonce initial-data (atom {"kaleidos-team" {:counters [{:id 1 :color :red :type :count-up :text "somebody messing up with the git repo" :last-updated (time/date-time 2014 9 27) :public-reset true}
+                                                         {:id 2 :color :yellow :type :streak   :text "daily Github commit" :last-updated (time/date-time 2014 8 3) :public-reset true}
+                                                         {:id 3 :color :blue :type :counter  :value 42 :text "we've broken the GIT repo' " :last-updated (time/date-time 2012 1 10) :public-reset false :public-plus true}]
                                      :name "Kaleidos Team"}}))
 
 (defn make-system []
