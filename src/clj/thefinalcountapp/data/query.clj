@@ -5,9 +5,11 @@
 ;; :count-up -> Days without...
 ;; :streak -> Github daily count...
 ;; :counter -> Times you've broken the repo
-(defonce db (atom { "kaleidos-team" {:counters [{:id 1 :type :count-up :value 321 :text "somebody messing up with the git repo" :last-updated (Date.) :public-reset true}
-                                                {:id 2 :type :streak   :value 350 :text "daily Github commit" :last-updated (Date.) :public-reset true}
-                                                {:id 3 :type :counter  :value 123 :text "we've broken the GIT repo' " :last-updated (Date.) :public-reset false :public-plus true}]
+
+;; Colors allowed: :red, :pink, :blue, :purple, :yellow
+(defonce db (atom { "kaleidos-team" {:counters [{:id 1 :color :red :type :count-up :value 321 :text "somebody messing up with the git repo" :last-updated (Date.) :public-reset true}
+                                                {:id 2 :color :yellow :type :streak   :value 350 :text "daily Github commit" :last-updated (Date.) :public-reset true}
+                                                {:id 3 :color :blue :type :counter  :value 123 :text "we've broken the GIT repo' " :last-updated (Date.) :public-reset false :public-plus true}]
                                      :name "Kaleidos Team"}}))
 
 (defn create-group [_ group]
