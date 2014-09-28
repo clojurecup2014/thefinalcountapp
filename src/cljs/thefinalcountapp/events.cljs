@@ -8,31 +8,42 @@
 
 
 (let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket! "/chsk" ; Note the same path as before
-       {:type :auto ; e/o #{:auto :ajax :ws}
-       })]
+      (sente/make-channel-socket! "/chsk" {:type :auto})]
   (def chsk       chsk)
   (def ch-chsk    ch-recv) ; ChannelSocket's receive channel
   (def chsk-send! send-fn) ; ChannelSocket's send API fn
   (def chsk-state state)   ; Watchable, read-only atom
 )
 
+;; Events
+(defmulti event-handler :id)
 
-; TODO multimethod for handling events
+(defmethod event-handler :chsk/recv
+  [{:as ev :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (let [[ev payload] ?data]
+    (case (first ?data)
+      :group/subscribed (do (.log js/console "Subscribed to " payload) ; FIXME: just for testing
+                            (unsubscribe "kaleidos-team"))
+      :group/unsubscribed (.log js/console "Unsubscribed from " payload)
+      :counter/updated (.log js/console "Counter updated " payload)
+      :counter/created (.log js/console "Counter created " payload))))
 
-; Client events
-;  :group/subscribe
+
+(defmethod event-handler :default
+  [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
+  (.log js/console "ev ")
+  (.log js/console id))
+
+;;; Client events
+;; TODO: wait for open conn and uid available
 (defn subscribe [group]
-  (chsk-send! [:group/subscribe group]))
+  (chsk-send! [:group/subscribe {:group group :uid (:uid @chsk-state)}]))
 
-(subscribe "kaleidos-team")
+(defn unsubscribe [group]
+  (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]))
+
+(go (<! (async/timeout 10000))
+    (subscribe "kaleidos-team"))
 
 
-; Server events
-;  :counter/updated {:group "kaleidos-team" :id 1}
-
-
-(go-loop [ev (<! ch-chsk)]
-           (.log js/console "event received: ")
-           (.log js/console (str ev))
-           (recur (<! ch-chsk)))
+(sente/start-chsk-router! ch-chsk event-handler)

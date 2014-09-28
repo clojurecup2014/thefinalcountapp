@@ -7,7 +7,6 @@
             [com.stuartsierra.component :as component]))
 
 
-; (defonce subscriptions (atom {}))
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
       (sente/make-channel-socket! {:user-id-fn (fn [_] (UUID/randomUUID))})]
@@ -21,36 +20,74 @@
   (def connected-uids                connected-uids) ; Watchable, read-only atom
 )
 
+; TODO: connected-uids on disconnect, unsubscribe from all
 
+;; Subscriptions
+(def subscriptions (atom {}))
+
+(defn subscribe [uid group]
+  (swap! subscriptions (fn [subs]
+                         (update-in subs [uid] (fnil #(conj % group) #{})))))
+
+(defn subscribed? [uid group]
+  (if-let [subs (@subscriptions uid)]
+    (contains? subs group)
+    false))
+
+(defn unsubscribe [uid group]
+  (when (contains? @subscriptions uid)
+    (if (= 1 (count  (@subscriptions uid)))
+      (swap! subscriptions (fn [subs]
+                             (dissoc subs uid)))
+      (swap! subscriptions (fn [subs]
+                             (update-in subs [uid] #(disj % group)))))))
+
+
+;; Routes
 (defroutes pubsub-routes
   (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (ring-ajax-post                req)))
 
 
-(defn broadcast [num]
+;; Notifications
+(defn broadcast [value]
   (doseq [uid (:any @connected-uids)]
     (chsk-send! uid
                 [:some/broadcast
-                 {:num num}])))
+                 {:value value}])))
+
+;; Events
+(defmulti event-handler :id)
+
+(defmethod event-handler :group/subscribe
+  [{:keys [?data]}]
+  (let [{:keys [group uid]} ?data]
+    (subscribe uid group)
+    (chsk-send! uid [:group/subscribed group])))
+
+(defmethod event-handler :group/unsubscribe
+  [{:keys [?data]}]
+  (let [{:keys [group uid]} ?data]
+    (unsubscribe uid group)
+    (chsk-send! uid [:group/unsubscribed group])))
+
+(defmethod event-handler :default
+  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  nil)
 
 
-(defrecord PubSub []
+;; Component
+(defrecord PubSub [shutdown]
   component/Lifecycle
   (start [this]
-    ;; Process incoming events
-;    (go (let [ev (<! ch-chsk)]
-;          (chsk-send! nil {:foo :bar})))
-    ;; Broadcast
-    (go-loop [i 0]
-      (<! (async/timeout 1000))
-      (broadcast i)
-      (recur (inc i)))
     ;; Routes
-    (assoc this :routes (ring.middleware.defaults/wrap-defaults pubsub-routes ring.middleware.defaults/site-defaults)))
+    (assoc this :routes (ring.middleware.defaults/wrap-defaults pubsub-routes ring.middleware.defaults/site-defaults)
+                :shutdown (sente/start-chsk-router! ch-chsk event-handler)))
 
   (stop [this]
-    (dissoc this :routes)))
+    (shutdown)
+    (dissoc this :routes :shutdown)))
 
 
 (defn pubsub []
-  (->PubSub))
+  (map->PubSub {}))
