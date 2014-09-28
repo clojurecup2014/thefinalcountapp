@@ -60,7 +60,7 @@
   (reset-counter [_ group counter-id]
     (let [old-counter (s/get-counter _ group counter-id)]
       (if (= :counter (:type old-counter))
-        (s/update-counter _ group counter-id {:value 0})
+        (s/update-counter _ group counter-id {:value 0 :last-updated (time/now)})
         (s/update-counter _ group counter-id {:last-updated (time/now)}))))
 
   (delete-counter [_ group counter-id]
