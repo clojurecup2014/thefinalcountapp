@@ -12,10 +12,12 @@
 
 
 ;; Component
-(defrecord Routes [api]
+(defrecord Routes [api pubsub]
   component/Lifecycle
   (start [this]
-    (assoc this :routes (routes base-routes (:routes api))))
+    (assoc this :routes (routes base-routes
+                                (:routes api)
+                                (:routes pubsub))))
 
   (stop [this]
     (dissoc this :routes)))

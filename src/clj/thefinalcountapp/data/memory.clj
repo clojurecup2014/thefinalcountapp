@@ -4,7 +4,7 @@
             [clj-time.core :as time]))
 
 
-(defrecord InMemoryDatabase [store]
+(defrecord InMemoryAtomDatabase [store]
   component/Lifecycle
   (start [this]
     this)
@@ -66,3 +66,7 @@
   (delete-counter [_ group counter-id]
     (let [new-counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))]
       (swap! store #(assoc-in % [group :counters] new-counters)))))
+
+
+(defn in-memory-store [initial-data]
+  (->InMemoryAtomDatabase (atom initial-data)))

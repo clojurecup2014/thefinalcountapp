@@ -14,6 +14,7 @@
                  [ring/ring-defaults "0.1.2"]
                  [com.cognitect/transit-clj "0.8.247"]
                  [com.cognitect/transit-cljs "0.8.188"]
+                 [com.taoensso/sente "1.1.0"]
 
                  [com.stuartsierra/component "0.2.2"]
                  [liberator "0.12.2"]

@@ -5,7 +5,7 @@
             [com.stuartsierra.component :as component]))
 
 (defn make-store []
-  (memstore/->InMemoryDatabase (atom {})))
+  (memstore/in-memory-store {}))
 
 
 (deftest groups
