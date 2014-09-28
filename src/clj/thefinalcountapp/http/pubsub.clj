@@ -20,10 +20,13 @@
   (def connected-uids                connected-uids) ; Watchable, read-only atom
 )
 
-; TODO: connected-uids on disconnect, unsubscribe from all
-
 ;; Subscriptions
 (def subscriptions (atom {}))
+
+(add-watch connected-uids :unsubscribe-on-disconnect (fn [key reference old-state new-state]
+                                                       (doseq [uid (clojure.set/difference (set (:any old-state)) (set (:any new-state)))]
+                                                         (swap! subscriptions dissoc uid))))
+
 
 (defn subscribe [uid group]
   (swap! subscriptions (fn [subs]
