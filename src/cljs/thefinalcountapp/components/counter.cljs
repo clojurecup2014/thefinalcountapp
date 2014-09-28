@@ -131,6 +131,3 @@
            (list [button-reset #(cb-reset (:id counter-data))])
            (list [(if (= (:type counter-data) :counter) button-plus :g ) #(cb-add (:id counter-data))]))
    ])
-
-
-

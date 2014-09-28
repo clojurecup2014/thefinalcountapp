@@ -22,6 +22,28 @@
 ;    [:g {:transform "translate(680, 300)"}
 ;     [:g {:transform "scale(1.0, 1.0)"} [counter]]]]])
 
+(defn index-of [coll v]
+  (let [i (count (take-while #(not= v (:id %)) coll))
+        _ (.log js/console (str i " " coll " " v))]
+    (when (or (< i (count coll))
+              (= v (:id (last coll))))
+      i)))
+
+(defn reset-counter [state id]
+  (let [idx-counter (index-of (:counters state) id)]
+    (http/post (str "/api/counters/kaleidos-team/" id "/reset") {})
+    (update-in state [:counters idx-counter :value] (fn [_] 0))))
+
+(defn reset-date [state id]
+  (let [idx-counter (index-of (:counters state) id)]
+    (http/post (str "/api/counters/kaleidos-team/" id "/reset") {})
+    (update-in state [:counters idx-counter :last-updated] (fn [_] (js/Date.)))))
+
+(defn increment-counter [state id]
+  (let [idx-counter (index-of (:counters state) id)]
+    (http/post (str "/api/counters/kaleidos-team/" id "/increment") {})
+    (update-in state [:counters idx-counter :value] inc)))
+
 (defn counter-list []
   (if (>= (count (:counters @state)) 3)
     (let [idx (:displaying @state)
@@ -36,10 +58,9 @@
        [:g {:transform "translate(1080, 120) scale(0.8, 0.8)" :style #js {"opacity" "0.4"}}
         [counter right-counter]]
        [:g {:transform "translate(640, 80)" :style #js {"opacity" "1.0"}}
-        [counter-with-buttons
-         center-counter
-         (fn [id] (js/alert (str "reset " id)))
-         (fn [id] (js/alert (str "add " id)))]]])))
+        (if (= (:type center-counter) :counter)
+          [counter-with-buttons center-counter #(swap! state reset-counter %) #(swap! state increment-counter %)]
+          [counter-with-buttons center-counter #(swap! state reset-date %) #()])]])))
 
 (defn main-component []
   [:div
