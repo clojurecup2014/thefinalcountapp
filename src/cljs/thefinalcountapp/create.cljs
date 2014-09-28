@@ -2,10 +2,11 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as reagent :refer [atom]]
             [thefinalcountapp.http :as http]
-            [thefinalcountapp.components.counter :refer [counter]]
+            [thefinalcountapp.components.counter :refer [banner-colors counter]]
             [cljs.core.async :refer [<!]]))
 
 (def current-counter (atom {:type :count-up
+                            :color :red
                             :value 0
                             :text "text"
                             :last-updated (js/Date.)
@@ -18,7 +19,9 @@
     [:div.preview-title "PREVIEW"]]])
 
 (defn color-picker [color]
-  [:div {:class "color-picker" :style #js {"background-color" color}}])
+  [:div {:class "color-picker"
+         :on-click #(swap! current-counter assoc :color color)
+         :style #js {"background-color" (color banner-colors)}}])
 
 (defn counter-form []
   [:form {:on-submit (fn [e] (go (<! (http/post "/api/counters/kaleidos-team" @current-counter)) (set! (.-location js/window) "/")) false)}
@@ -34,11 +37,11 @@
     [:input {:type "hidden" :name "color"}]
     [:span "Counter color"]
     [:div {:class "colors-panel"}
-     [color-picker "#e34a3f"]
-     [color-picker "#f67bab"]
-     [color-picker "#18b3c2"]
-     [color-picker "#412f72"]
-     [color-picker "#f4c85c"]]]
+     [color-picker :red]
+     [color-picker :pink]
+     [color-picker :blue]
+     [color-picker :purple]
+     [color-picker :yellow]]]
    [:button {:type "submit"} "Create counter"]])
 
 (defn main-component []

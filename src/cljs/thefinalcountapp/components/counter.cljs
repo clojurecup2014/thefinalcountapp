@@ -3,6 +3,26 @@
             [thefinalcountapp.time :as time]))
 
 
+(def banner-colors
+  {:red "#e34a3f"
+   :pink "#f67bab"
+   :blue "#29ACB8"
+   :purple "#523C8D"
+   :yellow "#f4c85c"})
+
+(def banner-colors-dark
+  {:red "#d52b1f"
+   :pink "#f55794"
+   :blue "#0095A3"
+   :purple "#412f72"
+   :yellow "#E0B957"})
+
+(def banner-colors-darker
+  {:red "#ae2319"
+   :pink "#F1005E"
+   :blue "#0E7A85"
+   :purple "#291E46"
+   :yellow "#C2A04D"})
 
 (defn counter-type->text [type]
   (cond
@@ -42,6 +62,9 @@
         counter-a (nth str-val 0)
         counter-b (nth str-val 1)
         counter-c (nth str-val 2)
+        color-light ((:color counter-data) banner-colors)
+        color-dark ((:color counter-data) banner-colors-dark)
+        color-darker ((:color counter-data) banner-colors-darker)
         reset-text (str "Last reset: " (:last-updated counter-data) )]
     [:g {:transform "translate(-380, -280)" :style #js {"display" "inline"}}
      [:rect {:width "482.69235" :height "487.99667" :rx "7.2934284" :ry "7.2934284" :x "415.93054" :y "323.10889" :style #js {"fill" "#989898" "fill-opacity" "1" "stroke" "none"}}]
@@ -51,11 +74,11 @@
      [:rect {:width "125.88039" :height "184.32481" :rx "7.0647144" :ry "7.0647144" :x "594.33948" :y "511.69803" :style #js {"fill" "#989898" "fill-opacity" "1" "stroke" "none"}}]
      [:rect {:width "125.88039" :height "184.32481" :rx "7.0647144" :ry "7.0647144" :x "730.58063" :y "511.69803" :style #js {"fill" "#989898" "fill-opacity" "1" "stroke" "none"}}]
      [:g {:transform "matrix(0.93767868,0,0,0.93767868,-344.04539,65.552028)"}
-      [:path {:d "m 1347.125,244.1875 -120,0 0,73 120,0 -20,-36.5 z"    :style #js {"fill" "#d52b1f" "fill-opacity" "1" "stroke" "none"}}]
-      [:path {:d "m 1227.2484,317.0625 41.75,-10.625 -41.875,-0.3125 z" :style #js {"fill" "#ae2319" "fill-opacity" "1" "stroke" "none"}}]
-      [:path {:d "m 784.87341,244 120,0 0,73 -120,0 20,-36.5 z"         :style #js {"fill" "#d52b1f" "fill-opacity" "1" "stroke" "none"}}]
-      [:path {:d "M 904.75,316.875 863,306.25 l 41.875,-0.3125 z"       :style #js {"fill" "#ae2319" "fill-opacity" "1" "stroke" "none"}}]
-      [:rect {:width "406" :height "73" :x "862.87341" :y "233.5" :style #js {"fill" "#e34a3f" "fill-opacity" "1" "stroke" "none"}}]
+      [:path {:d "m 1347.125,244.1875 -120,0 0,73 120,0 -20,-36.5 z"    :style #js {"fill" color-dark "fill-opacity" "1" "stroke" "none"}}]
+      [:path {:d "m 1227.2484,317.0625 41.75,-10.625 -41.875,-0.3125 z" :style #js {"fill" color-darker "fill-opacity" "1" "stroke" "none"}}]
+      [:path {:d "m 784.87341,244 120,0 0,73 -120,0 20,-36.5 z"         :style #js {"fill" color-dark "fill-opacity" "1" "stroke" "none"}}]
+      [:path {:d "M 904.75,316.875 863,306.25 l 41.875,-0.3125 z"       :style #js {"fill" color-darker "fill-opacity" "1" "stroke" "none"}}]
+      [:rect {:width "406" :height "73" :x "862.87341" :y "233.5" :style #js {"fill" color-light "fill-opacity" "1" "stroke" "none"}}]
       [:text {:x "952.60876" :y "288.008" :style #js {"font-size" "40px" "font-style" "normal" "font-weight" "normal" "line-height" "125%" "letter-spacing" "0px" "word-spacing" "0px" "fill" "#000000" "fill-opacity" "1" "stroke" "none" "font-family" "Sans"}}
        [:tspan {:x "1070" :y "288.008" :text-anchor "middle" :style #js {"text-align" "center" "font-size" "48px" "font-style" "normal" "font-variant" "normal" "font-weight" "normal" "font-stretch" "normal" "fill" "#ffffff" "font-family" "Ubuntu"}}
         title]
