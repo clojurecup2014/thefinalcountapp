@@ -7,6 +7,7 @@
             [com.stuartsierra.component :as component]))
 
 
+;; Pubsub channel
 (let [{:keys [ch-recv send-fn ajax-post-fn ajax-get-or-ws-handshake-fn
               connected-uids]}
       (sente/make-channel-socket! {:user-id-fn (fn [_] (UUID/randomUUID))})]
@@ -19,6 +20,7 @@
   ;; Connected clients
   (def connected-uids                connected-uids) ; Watchable, read-only atom
 )
+
 
 ;; Subscriptions
 (def subscriptions (atom {}))
@@ -83,7 +85,6 @@
 (defrecord PubSub [shutdown]
   component/Lifecycle
   (start [this]
-    ;; Routes
     (assoc this :routes (ring.middleware.defaults/wrap-defaults pubsub-routes ring.middleware.defaults/site-defaults)
                 :shutdown (sente/start-chsk-router! ch-chsk event-handler)))
 
