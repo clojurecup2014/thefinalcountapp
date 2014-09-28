@@ -13,7 +13,12 @@
   {:type (s/enum :count-up
                  :streak
                  :counter)
-  :text s/Str
+   :text s/Str
+   :color (s/enum :red
+                  :pink
+                  :blue
+                  :purple
+                  :yellow)
   (s/optional-key :value) s/Int
   (s/optional-key :public-reset) s/Bool
   (s/optional-key :public-plus) s/Bool})
