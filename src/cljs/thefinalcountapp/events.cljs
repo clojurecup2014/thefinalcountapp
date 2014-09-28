@@ -18,19 +18,19 @@
 )
 
 
-(defn subscribe [group]
-  (chsk-send! [:group/subscribe group]))
-
-
-(subscribe "kaleidos-team")
-
 ; TODO multimethod for handling events
 
 ; Client events
 ;  :group/subscribe
+(defn subscribe [group]
+  (chsk-send! [:group/subscribe group]))
+
+(subscribe "kaleidos-team")
+
 
 ; Server events
 ;  :counter/updated {:group "kaleidos-team" :id 1}
+
 
 (go-loop [ev (<! ch-chsk)]
            (.log js/console "event received: ")
