@@ -30,9 +30,9 @@
     [:option {:value "streak"} "DAYS DOING"]
     [:option {:value "counter"} "TIMES"]]
    [:input {:type "text" :name "text" :placeholder "Introduce text" :on-change #(swap! current-counter assoc :text (-> % .-target .-value))}]
-   [:div {:class "reset-enabled"}
-    [:span "Reset enabled"]
-    [:input {:type "checkbox" :name "public-reset"}]]
+   ;[:div {:class "reset-enabled"}
+   ; [:span "Reset enabled"]
+   ; [:input {:type "checkbox" :name "public-reset"}]]
    [:div {:class "color-picker-panel"}
     [:input {:type "hidden" :name "color"}]
     [:span "Counter color"]
