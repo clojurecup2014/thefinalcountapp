@@ -1,5 +1,9 @@
 (ns thefinalcountapp.events
-  (:require [taoensso.sente  :as sente]))
+  (:require-macros [cljs.core.async.macros :refer [go]])
+  (:require [taoensso.sente  :as sente]
+            [thefinalcountapp.http :as http]
+            [thefinalcountapp.state :as state]
+            [cljs.core.async :as async :refer [<!]]))
 
 
 (let [{:keys [chsk ch-recv send-fn state]}
@@ -13,55 +17,48 @@
 ;; Events
 (defmulti event-handler (comp first :?data))
 
-(defmethod event-handler :group/subscribed
-  [{:as ev :keys [?data]}]
-  (let [[ev group] ?data]
-    (.log js/console "Subscribed to " group)))
-
-(defmethod event-handler :group/unsubscribed
-  [{:as ev :keys [?data]}]
-  (let [[ev group] ?data]
-    (.log js/console "Unsubscribed from " group)))
+;; (defmethod event-handler :group/subscribed
+;;   [{:as ev :keys [?data]}]
+;;   (let [[ev group] ?data]
+;;     (.log js/console "Subscribed to " group)))
+;;
+;; (defmethod event-handler :group/unsubscribed
+;;   [{:as ev :keys [?data]}]
+;;   (let [[ev group] ?data]
+;;     (.log js/console "Unsubscribed from " group)))
 
 (defmethod event-handler :counter/created
   [{:as ev :keys [?data]}]
-  (let [[ev {:keys [group counter]}] ?data]
-    (.log js/console "Created counter with id " (:id counter) " in group " group)))
+  (let [[ev {:keys [group id]}] ?data]
+    (go
+      (let [counter (:data (<! (http/get (str "/api/counters/kaleidos-team/" id))))]
+        (state/add-counter counter)))))
 
 (defmethod event-handler :counter/updated
   [{:as ev :keys [?data]}]
-  (let [[ev {:keys [group counter]}] ?data]
-    (.log js/console "Updated counter with id " (:id counter) " in group " group)))
+  (let [[ev {:keys [group id]}] ?data]
+    (go
+      (let [counter (:data (<! (http/get (str "/api/counters/kaleidos-team/" id))))]
+        (state/update-counter counter)))))
 
 (defmethod event-handler :counter/deleted
   [{:as ev :keys [?data]}]
   (let [[ev {:keys [group id]}] ?data]
-    (.log js/console "Deleted counter with id " id " in group " group)))
+    (state/delete-counter id)))
 
 (defmethod event-handler :default
   [{:keys [event id ?data ring-req ?reply-fn send-fn]}]
-  (.log js/console "ev ")
-  (.log js/console id))
+  nil)
 
 ;;; Client actions
-(defn subscribe [group timeout cb]
-  (chsk-send! [:group/subscribe {:group group :uid (:uid @chsk-state)}]
-              timeout
-              cb))
+(defn subscribe [group]
+  (chsk-send! [:group/subscribe {:group group :uid (:uid @chsk-state)}]))
 
-(defn unsubscribe [group timeout cb]
-  (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]
-              timeout
-              cb))
-
+(defn unsubscribe [group]
+  (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]))
 
 ;; Subscribe
-(add-watch chsk-state :connection (fn [key reference old-state new-state]
-                                    (subscribe "kaleidos-team"
-                                               8000
-                                               (fn [reply]
-                                                 (when (sente/cb-success reply)
-                                                   (remove-watch chsk-state :connection))))))
-
-
-(sente/start-chsk-router! ch-chsk event-handler)
+(defn start-event-system []
+  (sente/start-chsk-router! ch-chsk event-handler)
+  (go (<! (async/timeout 1000))
+      (subscribe "kaleidos-team")))

@@ -1,20 +1,12 @@
 (ns thefinalcountapp.core
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.core :as reagent :refer [atom]]
+  (:require [reagent.core :as reagent]
             [thefinalcountapp.http :as http]
             [thefinalcountapp.time :as time]
             [thefinalcountapp.components.counter :refer [counter counter-with-buttons]]
+            [thefinalcountapp.state :refer [state index-of]]
+            [thefinalcountapp.events :as events]
             [cljs.core.async :as async :refer [<!]]))
-
-(def state (atom {:group "kaleidos-team"
-                  :counters []
-                  :displaying 0}))
-
-(defn index-of [coll v]
-  (let [i (count (take-while #(not= v (:id %)) coll))]
-    (when (or (< i (count coll))
-              (= v (:id (last coll))))
-      i)))
 
 (defn reset-counter [state id]
   (let [idx-counter (index-of (:counters state) id)]
@@ -75,14 +67,11 @@
   (js/setInterval (fn []
                    (swap! state update-timer)) 3000))
 
-;(.log js/console "Lol")
-;(.log js/console (time/days-since (js/Date. 2014 09 01)))
-
 (defn ^:export run []
   (go (let [response (<! (http/get "/api/counters/kaleidos-team"))]
-        (.log js/console (str (-> response :data :counters)))
         (swap! state #(assoc % :counters (-> response :data :counters)))))
 
+  (events/start-event-system)
   (update-counters)
   (reagent/render-component [main-component]
                             (. js/document (getElementById "main"))))
