@@ -25,13 +25,13 @@
 
 (defmethod event-handler :counter/created
   [{:as ev :keys [?data]}]
-  (let [[ev {:keys [group id]}] ?data]
-    (.log js/console "Created counter with id " id " in group " group)))
+  (let [[ev {:keys [group counter]}] ?data]
+    (.log js/console "Created counter with id " (:id counter) " in group " group)))
 
 (defmethod event-handler :counter/updated
   [{:as ev :keys [?data]}]
-  (let [[ev {:keys [group id]}] ?data]
-    (.log js/console "Updated counter with id " id " in group " group)))
+  (let [[ev {:keys [group counter]}] ?data]
+    (.log js/console "Updated counter with id " (:id counter) " in group " group)))
 
 (defmethod event-handler :counter/deleted
   [{:as ev :keys [?data]}]

@@ -83,7 +83,7 @@
                  req (:request ctx)
                  db (::db req)
                  created-counter (store/create-counter db group counter)]
-             (pubsub/notify :counter/created group {:group group :id (:id created-counter)})
+             (pubsub/notify :counter/created group {:group group :counter created-counter})
              {::entity created-counter}))
   :post-redirect? false
   :new? false
@@ -105,7 +105,7 @@
                 req (:request ctx)
                 db (::db req)
                 updated-counter (store/update-counter db group counter-id counter)]
-            (pubsub/notify :counter/updated group {:group group :id counter-id})
+            (pubsub/notify :counter/updated group {:group group :counter updated-counter})
             {::entity updated-counter}))
   :conflict? false
   :post-redirect? false
@@ -139,7 +139,7 @@
   :post! (fn [ctx]
            (let [db (::db (:request ctx))]
              (store/increment-counter db group counter-id)
-             (pubsub/notify :counter/updated group {:group group :id counter-id})))
+             (pubsub/notify :counter/updated group {:group group :counter (store/get-counter db group counter-id)})))
   :post-redirect? false
   :new? false
   :respond-with-entity? false)
@@ -154,7 +154,7 @@
   :post! (fn [ctx]
            (let [db (::db (:request ctx))]
              (store/reset-counter db group counter-id)
-             (pubsub/notify :counter/updated group {:group group :id counter-id})))
+             (pubsub/notify :counter/updated group {:group group :counter (store/get-counter db group counter-id)})))
   :post-redirect? false
   :new? false
   :respond-with-entity? false)
