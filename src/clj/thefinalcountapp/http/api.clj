@@ -77,7 +77,8 @@
   :post! (fn [ctx]
            (let [counter (get-in ctx [:request :body])
                  counter (transit/read (transit/reader counter :json))
-                 db (::db ctx)]
+                 req (:request ctx)
+                 db (::db req)]
              {::entity (store/create-counter db group counter)}))
   :post-redirect? false
   :new? false
