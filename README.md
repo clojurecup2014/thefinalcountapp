@@ -13,9 +13,9 @@ https://clojurecup.com
 ## Features
 
 * Create different flavours of counters
-- "Days without", for counting the days that have passed since the last time something occurred
-- "Days doing", for counting the streak of days you've done something
-- "Times", a counter that can be incremented and tracks the number of times something has happened
+ - "Days without", for counting the days that have passed since the last time something occurred
+ - "Days doing", for counting the streak of days you've done something
+ - "Times", a counter that can be incremented and tracks the number of times something has happened
 * Reset counters
 * SVG rendering and visualization of counters
 * "Real time" updates through websockets
