@@ -1,6 +1,7 @@
 (ns thefinalcountapp.data.memory
   (:require [com.stuartsierra.component :as component]
-            [thefinalcountapp.data.store :as s]))
+            [thefinalcountapp.data.store :as s]
+            [clj-time.core :as time]))
 
 
 (defrecord InMemoryDatabase [store]
@@ -51,6 +52,16 @@
           new-counters (conj counters updated-counter)]
      (swap! store #(assoc-in % [group :counters] new-counters))
      updated-counter))
+
+  (increment-counter [_ group counter-id]
+    (let [old-counter (s/get-counter _ group counter-id)]
+     (s/update-counter _ group counter-id {:value (inc (:value old-counter))})))
+
+  (reset-counter [_ group counter-id]
+    (let [old-counter (s/get-counter _ group counter-id)]
+      (if (= :counter (:type old-counter))
+        (s/update-counter _ group counter-id {:value 0})
+        (s/update-counter _ group counter-id {:last-updated (time/now)}))))
 
   (delete-counter [_ group counter-id]
     (let [new-counters (vec (filter #(not= counter-id (:id %)) (:counters (s/get-group _ group))))]

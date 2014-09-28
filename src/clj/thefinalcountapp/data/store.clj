@@ -18,4 +18,8 @@
 
   (update-counter [_ group counter-id new-counter])
 
+  (increment-counter [_ group counter-id])
+
+  (reset-counter [_ group counter-id])
+
   (delete-counter [_ group counter-id]))
