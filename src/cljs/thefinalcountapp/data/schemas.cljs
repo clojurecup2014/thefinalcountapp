@@ -14,7 +14,7 @@
                  :streak
                  :counter)
   :text s/Str
-  :value s/Int
+  (s/optional-key :value) s/Int
   (s/optional-key :public-reset) s/Bool
   (s/optional-key :public-plus) s/Bool})
 

@@ -1,11 +1,20 @@
 (ns thefinalcountapp.components.counter
-  (:require [goog.string :as gstring]))
+  (:require [goog.string :as gstring]
+            [thefinalcountapp.time :as time]))
 
-(defn counter-type-to-text [type]
+
+
+(defn counter-type->text [type]
   (cond
    (= type :count-up) "DAYS WITHOUT"
    (= type :streak) "DAYS DOING"
    :else "TIMES"))
+
+(defn counter->count [counter]
+  (case (:type counter)
+    :counter (:value counter)
+    :count-up (time/days-since (:last-updated counter))
+    :streak (time/days-since (:last-updated counter))))
 
 (defn button-share []
   [:g {:transform "translate(64,-10)"}
@@ -26,10 +35,10 @@
 
 
 (defn counter [counter-data]
-  (let [title (counter-type-to-text (:type counter-data))
+  (let [title (counter-type->text (:type counter-data))
         text-line1 (subs (:text counter-data) 0 20)
         text-line2 (subs (:text counter-data) 20)
-        str-val (gstring/format "%03d" (:value counter-data))
+        str-val (gstring/format "%03d" (counter->count counter-data))
         counter-a (nth str-val 0)
         counter-b (nth str-val 1)
         counter-c (nth str-val 2)
