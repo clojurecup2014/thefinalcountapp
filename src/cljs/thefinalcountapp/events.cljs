@@ -24,8 +24,9 @@
     (case (first ?data)
       :group/subscribed (.log js/console "Subscribed to " payload)
       :group/unsubscribed (.log js/console "Unsubscribed from " payload)
-      :counter/updated (.log js/console "Counter updated " payload)
-      :counter/created (.log js/console "Counter created " payload))))
+      :counter/updated (.log js/console "Counter updated " (str payload))
+      :counter/deleted (.log js/console "Counter deleted " (str payload))
+      :counter/created (.log js/console "Counter created " (str payload)))))
 
 
 (defmethod event-handler :default
@@ -40,9 +41,6 @@
 
 (defn unsubscribe [group]
   (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]))
-
-(go (<! (async/timeout 3000))
-    (subscribe "kaleidos-team"))
 
 
 (sente/start-chsk-router! ch-chsk event-handler)

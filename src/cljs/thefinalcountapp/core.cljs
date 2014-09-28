@@ -4,7 +4,7 @@
             [thefinalcountapp.http :as http]
             [thefinalcountapp.time :as time]
             [thefinalcountapp.components.counter :refer [counter counter-with-buttons]]
-            [cljs.core.async :refer [<!]]))
+            [cljs.core.async :as async :refer [<!]]))
 
 (def state (atom {:group "kaleidos-team"
                   :counters []

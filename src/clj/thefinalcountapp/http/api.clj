@@ -6,6 +6,7 @@
             [thefinalcountapp.time :as time]
             [thefinalcountapp.data.store :as store]
             [thefinalcountapp.data.schemas :as schemas]
+            [thefinalcountapp.http.pubsub :as pubsub]
             [schema.core :refer [check]]
             [liberator.core :refer [defresource]]
             [cognitect.transit :as transit]
@@ -78,13 +79,14 @@
            (let [counter (get-in ctx [:request :body])
                  counter (transit/read (transit/reader counter :json))
                  req (:request ctx)
-                 db (::db req)]
-             {::entity (store/create-counter db group counter)}))
+                 db (::db req)
+                 created-counter (store/create-counter db group counter)]
+             (pubsub/notify :counter/created group {:group group :id (:id created-counter)})
+             {::entity created-counter}))
   :post-redirect? false
   :new? false
   :respond-with-entity? true
-  :multiple-representations? false
-  :handle-ok ::entity)
+  :multiple-representations? false)
 
 
 (defresource counter-update [group counter-id]
@@ -98,14 +100,15 @@
   :put! (fn [ctx]
           (let [body (get-in ctx [:request :body])
                 counter (transit/read (transit/reader body :json))
-                db (::db ctx)]
-            {::entity (store/update-counter db group counter-id counter)}))
+                db (::db ctx)
+                updated-counter (store/update-counter db group counter-id counter)]
+            (pubsub/notify :counter/updated group {:group group :id (:id counter)})
+            {::entity updated-counter}))
   :conflict? false
   :post-redirect? false
   :new? false
   :respond-with-entity? true
-  :multiple-representations? false
-  :handle-ok ::entity)
+  :multiple-representations? false)
 
 
 (defresource counter-delete [group counter-id]
@@ -118,8 +121,9 @@
   :delete! (fn [ctx]
              (let [req (:request ctx)
                    db (::db req)]
-              (store/delete-counter db group counter-id))))
 
+              (store/delete-counter db group counter-id)
+              (pubsub/notify :counter/deleted group {:group group :id counter-id}))))
 
 (defresource counter-increment [group counter-id]
   resource-defaults
@@ -132,7 +136,8 @@
                    (= :counter (:type (store/get-counter db group counter-id)))))
   :post! (fn [ctx]
            (let [db (::db (:request ctx))]
-             (store/increment-counter db group counter-id)))
+             (store/increment-counter db group counter-id)
+             (pubsub/notify :counter/updated group {:group group :id counter-id})))
   :post-redirect? false
   :new? false
   :respond-with-entity? false)
@@ -146,7 +151,8 @@
                (store/counter-exists? db group counter-id)))
   :post! (fn [ctx]
            (let [db (::db (:request ctx))]
-             (store/reset-counter db group counter-id)))
+             (store/reset-counter db group counter-id)
+             (pubsub/notify :counter/updated group {:group group :id counter-id})))
   :post-redirect? false
   :new? false
   :respond-with-entity? false)
