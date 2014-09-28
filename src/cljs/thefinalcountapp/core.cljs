@@ -3,7 +3,7 @@
   (:require [reagent.core :as reagent :refer [atom]]
             [thefinalcountapp.http :as http]
             [thefinalcountapp.time :as time]
-            [thefinalcountapp.components.counter :refer [counter]]
+            [thefinalcountapp.components.counter :refer [counter counter-with-buttons]]
             [cljs.core.async :refer [<!]]))
 
 (def state (atom {:group "kaleidos-team"
@@ -36,7 +36,10 @@
        [:g {:transform "translate(1080, 120) scale(0.8, 0.8)" :style #js {"opacity" "0.4"}}
         [counter right-counter]]
        [:g {:transform "translate(640, 80)" :style #js {"opacity" "1.0"}}
-        [counter center-counter]]])))
+        [counter-with-buttons
+         center-counter
+         (fn [id] (js/alert (str "reset " id)))
+         (fn [id] (js/alert (str "add " id)))]]])))
 
 (defn main-component []
   [:div
