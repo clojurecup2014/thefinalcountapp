@@ -43,18 +43,17 @@
                              (update-in subs [uid] #(disj % group)))))))
 
 
+;; Notifications
+(defn notify [ev group data]
+  (doseq [uid (filter #(subscribed? % group) (:any @connected-uids))]
+    (chsk-send! uid [ev data])))
+
+
 ;; Routes
 (defroutes pubsub-routes
   (GET  "/chsk" req (ring-ajax-get-or-ws-handshake req))
   (POST "/chsk" req (ring-ajax-post                req)))
 
-
-;; Notifications
-(defn broadcast [value]
-  (doseq [uid (:any @connected-uids)]
-    (chsk-send! uid
-                [:some/broadcast
-                 {:value value}])))
 
 ;; Events
 (defmulti event-handler :id)
@@ -64,6 +63,7 @@
   (let [{:keys [group uid]} ?data]
     (subscribe uid group)
     (chsk-send! uid [:group/subscribed group])))
+
 
 (defmethod event-handler :group/unsubscribe
   [{:keys [?data]}]

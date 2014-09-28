@@ -42,7 +42,7 @@
 (defn unsubscribe [group]
   (chsk-send! [:group/unsubscribe {:group group :uid (:uid @chsk-state)}]))
 
-(go (<! (async/timeout 10000))
+(go (<! (async/timeout 3000))
     (subscribe "kaleidos-team"))
 
 
